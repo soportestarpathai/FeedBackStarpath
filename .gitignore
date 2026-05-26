@@ -2,5 +2,7 @@ venv/
 .env
 __pycache__/
 *.pyc
+*.pyo
+.DS_Store
 media/
 db.sqlite3
