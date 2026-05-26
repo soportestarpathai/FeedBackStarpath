@@ -1,0 +1,73 @@
+{% extends 'dashboard_base.html' %}
+{% block page_title %}Plataformas{% endblock %}
+{% block main_content %}
+<div class="grid grid-cols-3 gap-6">
+  <!-- Form -->
+  <div class="col-span-1 bg-white rounded-xl border border-slate-200 p-6">
+    <h3 class="font-semibold mb-4">Nueva plataforma</h3>
+    <form method="post">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="text-sm font-medium text-slate-700">Nombre</label>
+        <input name="nombre" type="text" required
+          class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sky-400 outline-none">
+      </div>
+      <div class="mb-3">
+        <label class="text-sm font-medium text-slate-700">Descripción</label>
+        <textarea name="descripcion" rows="2"
+          class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sky-400 outline-none"></textarea>
+      </div>
+      <div class="mb-4">
+        <label class="text-sm font-medium text-slate-700">Color</label>
+        <input name="color" type="color" value="#0ea5e9"
+          class="mt-1 h-9 w-full border border-slate-300 rounded-lg cursor-pointer">
+      </div>
+      <button type="submit"
+        class="w-full bg-[#0a1628] text-white font-semibold py-2 rounded-lg hover:bg-[#162d5a] transition text-sm">
+        Agregar
+      </button>
+    </form>
+  </div>
+  <!-- List -->
+  <div class="col-span-2 bg-white rounded-xl border border-slate-200 overflow-hidden">
+    <table class="w-full">
+      <thead class="bg-slate-50 text-xs font-bold text-slate-500 uppercase tracking-wide">
+        <tr>
+          <th class="px-4 py-3 text-left">Plataforma</th>
+          <th class="px-4 py-3 text-left">Descripción</th>
+          <th class="px-4 py-3 text-left">Estado</th>
+          <th class="px-4 py-3 text-left">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in platforms %}
+        <tr class="border-t border-slate-100 hover:bg-slate-50">
+          <td class="px-4 py-3 font-medium flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full inline-block" style="background:{{ p.color }}"></span>
+            {{ p.nombre }}
+          </td>
+          <td class="px-4 py-3 text-sm text-slate-500">{{ p.descripcion|default:"—" }}</td>
+          <td class="px-4 py-3">
+            <span class="text-xs font-semibold px-2 py-1 rounded
+              {% if p.activa %}bg-green-100 text-green-700{% else %}bg-slate-100 text-slate-500{% endif %}">
+              {% if p.activa %}Activa{% else %}Inactiva{% endif %}
+            </span>
+          </td>
+          <td class="px-4 py-3 flex gap-2">
+            <a href="{% url 'platform_toggle' p.pk %}"
+              class="text-xs text-sky-600 hover:underline">
+              {% if p.activa %}Desactivar{% else %}Activar{% endif %}
+            </a>
+            <a href="{% url 'platform_delete' p.pk %}"
+              class="text-xs text-red-500 hover:underline"
+              onclick="return confirm('¿Eliminar {{ p.nombre }}?')">Eliminar</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" class="px-4 py-6 text-center text-slate-400 text-sm">Sin plataformas registradas</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
