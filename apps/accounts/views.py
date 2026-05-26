@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
+from django.views.decorators.http import require_POST
 from apps.accounts.forms import LoginForm, RegisterForm
 from apps.accounts.models import User
 
@@ -20,6 +21,7 @@ def login_view(request):
         error = 'Credenciales incorrectas'
     return render(request, 'accounts/login.html', {'form': form, 'error': error})
 
+@require_POST
 def logout_view(request):
     logout(request)
     return redirect('/login/')
