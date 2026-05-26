@@ -42,7 +42,7 @@ def _get_filtered_reports(request):
     estado     = request.GET.get('estado')
     severidad  = request.GET.get('severidad')
     q          = request.GET.get('q')
-    if plataforma: qs = qs.filter(plataforma_id=plataforma)
+    if plataforma and str(plataforma).isdigit(): qs = qs.filter(plataforma_id=plataforma)
     if tipo:       qs = qs.filter(tipo=tipo)
     if estado:     qs = qs.filter(estado=estado)
     if severidad:  qs = qs.filter(severidad=severidad)
@@ -51,14 +51,18 @@ def _get_filtered_reports(request):
 
 
 # Stubs — replace in Tasks 9-10
+@login_required
 def new_report_view(request):
     return HttpResponse('TODO')
 
+@login_required
 def report_detail_view(request, pk):
     return HttpResponse('TODO')
 
+@login_required
 def admin_reports_view(request):
     return HttpResponse('TODO')
 
+@login_required
 def change_status_view(request, pk):
     return HttpResponse('TODO')

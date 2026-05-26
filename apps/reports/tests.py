@@ -44,7 +44,8 @@ class DashboardViewTest(TestCase):
 
     def test_dashboard_requires_login(self):
         r = self.client.get(reverse('dashboard'))
-        self.assertRedirects(r, '/login/?next=/')
+        from django.conf import settings
+        self.assertRedirects(r, f"{settings.LOGIN_URL}?next={reverse('dashboard')}")
 
     def test_dashboard_usuario_sees_only_own_reports(self):
         other = User.objects.create_user(username='o', email='o@t.com', password='p')
@@ -83,3 +84,20 @@ class DashboardViewTest(TestCase):
         )
         self.assertContains(r, 'EVE bug')
         self.assertNotContains(r, 'Medical bug')
+
+    def test_reports_table_requires_login(self):
+        r = self.client.get(reverse('reports_table'))
+        from django.conf import settings
+        self.assertRedirects(r, f"{settings.LOGIN_URL}?next={reverse('reports_table')}")
+
+    def test_htmx_filter_by_title(self):
+        Report.objects.create(titulo='Login falla', descripcion='d',
+            plataforma=self.plat, tipo=Report.BUG, severidad=Report.ALTA,
+            reportado_por=self.admin)
+        Report.objects.create(titulo='PDF error', descripcion='d',
+            plataforma=self.plat, tipo=Report.BUG, severidad=Report.ALTA,
+            reportado_por=self.admin)
+        self.client.force_login(self.admin)
+        r = self.client.get(reverse('reports_table'), {'q': 'Login'})
+        self.assertContains(r, 'Login falla')
+        self.assertNotContains(r, 'PDF error')

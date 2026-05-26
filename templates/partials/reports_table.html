@@ -13,7 +13,7 @@
   <tbody>
     {% for r in reports %}
     <tr class="border-t border-slate-100 hover:bg-slate-50 cursor-pointer"
-        onclick="window.location='/reportes/{{ r.pk }}/'">
+        onclick="window.location='{% url 'report_detail' r.pk %}'">
       <td class="px-4 py-3 text-slate-400 font-mono text-xs">#{{ r.pk }}</td>
       <td class="px-4 py-3">
         <div class="font-semibold text-sm max-w-xs truncate">{{ r.titulo }}</div>
