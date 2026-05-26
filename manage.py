@@ -3,6 +3,12 @@
 import os
 import sys
 
+# Set GTK DLL directory for WeasyPrint (Windows only)
+if sys.platform == 'win32' and 'WEASYPRINT_DLL_DIRECTORIES' not in os.environ:
+    _gtk_dir = os.path.join(os.path.expanduser('~'), 'GTK3', 'bin')
+    if os.path.isdir(_gtk_dir):
+        os.environ['WEASYPRINT_DLL_DIRECTORIES'] = _gtk_dir
+
 
 def main():
     """Run administrative tasks."""

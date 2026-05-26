@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 11px; color: #0f172a; }
+  .header { background: #0a1628; color: white; padding: 24px 32px; margin-bottom: 24px; }
+  .header h1 { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+  .header p  { font-size: 11px; color: #94a3b8; }
+  .filters   { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin: 0 32px 20px; display: flex; gap: 16px; flex-wrap: wrap; }
+  .filter-item span:first-child { font-weight: 600; color: #475569; }
+  .totals    { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin: 0 32px 24px; }
+  .total-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px; text-align: center; }
+  .total-box .val { font-size: 20px; font-weight: 800; color: #0a1628; }
+  .total-box .lbl { font-size: 9px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+  .section-title { font-size: 12px; font-weight: 700; color: #0a1628; padding: 0 32px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .report-card { margin: 0 32px 16px; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; page-break-inside: avoid; }
+  .report-header { background: #f8fafc; padding: 10px 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #e2e8f0; }
+  .report-id   { font-size: 10px; font-family: monospace; color: #94a3b8; }
+  .badge       { font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 3px; }
+  .badge.bug        { background: #fef2f2; color: #ef4444; }
+  .badge.sugerencia { background: #eff6ff; color: #2563eb; }
+  .badge.queja      { background: #fdf4ff; color: #9333ea; }
+  .badge.critica { background: #fef2f2; color: #ef4444; }
+  .badge.alta    { background: #fff7ed; color: #f97316; }
+  .badge.media   { background: #fefce8; color: #ca8a04; }
+  .badge.baja    { background: #f0fdf4; color: #16a34a; }
+  .badge.abierto     { background: #fef2f2; color: #ef4444; }
+  .badge.en_revision { background: #fefce8; color: #ca8a04; }
+  .badge.resuelto    { background: #f0fdf4; color: #16a34a; }
+  .badge.cerrado     { background: #f1f5f9; color: #64748b; }
+  .report-title  { font-weight: 700; font-size: 12px; flex: 1; }
+  .report-body   { padding: 12px 16px; }
+  .report-desc   { color: #475569; margin-bottom: 8px; line-height: 1.5; }
+  .meta-row      { display: flex; gap: 16px; font-size: 10px; color: #64748b; margin-bottom: 6px; }
+  .meta-row strong { color: #334155; }
+  .field-label { font-weight: 700; font-size: 10px; color: #475569; margin-top: 8px; margin-bottom: 2px; }
+  .field-val   { background: #f8fafc; padding: 6px 8px; border-radius: 4px; line-height: 1.4; white-space: pre-wrap; }
+  .screenshots { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .screenshots img { height: 80px; width: 120px; object-fit: cover; border-radius: 4px; border: 1px solid #e2e8f0; }
+  .footer { margin-top: 32px; padding: 16px 32px; border-top: 1px solid #e2e8f0; font-size: 10px; color: #94a3b8; text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>FeedbackEve — Reporte de Calidad</h1>
+  <p>Generado el {{ generado_en|date:"d/m/Y H:i" }}</p>
+</div>
+
+<div class="filters">
+  <div class="filter-item"><span>Plataforma:</span> {{ filtros.plataforma.nombre|default:"Todas" }}</div>
+  <div class="filter-item"><span>Estado:</span> {{ filtros.estado|default:"Todos" }}</div>
+  <div class="filter-item"><span>Severidad:</span> {{ filtros.severidad|default:"Todas" }}</div>
+  {% if filtros.desde %}<div class="filter-item"><span>Desde:</span> {{ filtros.desde }}</div>{% endif %}
+  {% if filtros.hasta %}<div class="filter-item"><span>Hasta:</span> {{ filtros.hasta }}</div>{% endif %}
+</div>
+
+<div class="totals">
+  <div class="total-box"><div class="val">{{ totales.total }}</div><div class="lbl">Total</div></div>
+  <div class="total-box"><div class="val" style="color:#ef4444">{{ totales.bugs }}</div><div class="lbl">Bugs</div></div>
+  <div class="total-box"><div class="val" style="color:#2563eb">{{ totales.sugerencias }}</div><div class="lbl">Sugerencias</div></div>
+  <div class="total-box"><div class="val" style="color:#9333ea">{{ totales.quejas }}</div><div class="lbl">Quejas</div></div>
+  <div class="total-box"><div class="val" style="color:#ef4444">{{ totales.criticos }}</div><div class="lbl">Críticos</div></div>
+  <div class="total-box"><div class="val" style="color:#22c55e">{{ totales.resueltos }}</div><div class="lbl">Resueltos</div></div>
+</div>
+
+<p class="section-title">Detalle de Reportes ({{ totales.total }})</p>
+
+{% for item in reports_data %}
+{% with r=item.report %}
+<div class="report-card">
+  <div class="report-header">
+    <span class="report-id">#{{ r.pk }}</span>
+    <span class="report-title">{{ r.titulo }}</span>
+    <span class="badge {{ r.tipo|lower }}">{{ r.get_tipo_display }}</span>
+    <span class="badge {{ r.severidad|lower }}">{{ r.get_severidad_display }}</span>
+    <span class="badge {{ r.estado|lower }}">{{ r.get_estado_display }}</span>
+  </div>
+  <div class="report-body">
+    <p class="report-desc">{{ r.descripcion }}</p>
+    <div class="meta-row">
+      <span><strong>Plataforma:</strong> {{ r.plataforma.nombre }}</span>
+      <span><strong>Reportado por:</strong> {{ r.reportado_por.email }}</span>
+      <span><strong>Fecha:</strong> {{ r.creado_en|date:"d/m/Y H:i" }}</span>
+    </div>
+    {% if r.pasos_reproducir %}
+      <p class="field-label">Pasos para reproducir</p>
+      <div class="field-val">{{ r.pasos_reproducir }}</div>
+    {% endif %}
+    {% if r.resultado_esperado %}
+      <p class="field-label">Resultado esperado</p>
+      <div class="field-val">{{ r.resultado_esperado }}</div>
+      <p class="field-label">Resultado obtenido</p>
+      <div class="field-val">{{ r.resultado_obtenido }}</div>
+    {% endif %}
+    {% if item.screenshots_b64 %}
+    <p class="field-label">Capturas de pantalla</p>
+    <div class="screenshots">
+      {% for src in item.screenshots_b64 %}
+        <img src="{{ src }}">
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endwith %}
+{% endfor %}
+
+<div class="footer">FeedbackEve · Portal Unificado de Calidad e Incidencias</div>
+</body>
+</html>

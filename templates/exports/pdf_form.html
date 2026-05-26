@@ -1,0 +1,58 @@
+{% extends 'dashboard_base.html' %}
+{% block page_title %}Exportar PDF{% endblock %}
+{% block page_heading %}Exportar PDF{% endblock %}
+{% block nav_pdf %}active{% endblock %}
+{% block main_content %}
+<div class="max-w-lg bg-white rounded-xl border border-slate-200 p-8">
+  <p class="text-slate-500 text-sm mb-6">
+    Filtra los reportes que deseas incluir en el PDF y descárgalo.
+  </p>
+  <form action="{% url 'pdf_download' %}" method="get" target="_blank">
+
+    <div class="mb-4">
+      <label class="block text-sm font-medium text-slate-700 mb-1">Plataforma</label>
+      <select name="plataforma"
+        class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none">
+        <option value="">Todas</option>
+        {% for p in platforms %}<option value="{{ p.pk }}">{{ p.nombre }}</option>{% endfor %}
+      </select>
+    </div>
+
+    <div class="mb-4">
+      <label class="block text-sm font-medium text-slate-700 mb-1">Estado</label>
+      <select name="estado"
+        class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none">
+        <option value="">Todos</option>
+        {% for val, label in estado_choices %}<option value="{{ val }}">{{ label }}</option>{% endfor %}
+      </select>
+    </div>
+
+    <div class="mb-4">
+      <label class="block text-sm font-medium text-slate-700 mb-1">Severidad</label>
+      <select name="severidad"
+        class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none">
+        <option value="">Todas</option>
+        {% for val, label in sev_choices %}<option value="{{ val }}">{{ label }}</option>{% endfor %}
+      </select>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4 mb-6">
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1">Desde</label>
+        <input type="date" name="desde"
+          class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1">Hasta</label>
+        <input type="date" name="hasta"
+          class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none">
+      </div>
+    </div>
+
+    <button type="submit"
+      class="w-full bg-[#0a1628] text-white font-semibold py-2.5 rounded-lg hover:bg-[#162d5a] transition">
+      Descargar PDF
+    </button>
+  </form>
+</div>
+{% endblock %}
