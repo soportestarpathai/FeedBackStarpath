@@ -135,3 +135,36 @@ class NewReportViewTest(TestCase):
         })
         self.assertEqual(Report.objects.count(), 1)
         self.assertEqual(Report.objects.first().pasos_reproducir, '1. Ir a exportar\n2. Click en XML')
+
+class ReportDetailTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.plat = Platform.objects.create(nombre='EVE 360', color='#0ea5e9')
+        self.admin = User.objects.create_user(
+            username='a', email='a@t.com', password='p', rol=User.ADMIN)
+        self.usuario = User.objects.create_user(
+            username='u', email='u@t.com', password='p', rol=User.USUARIO)
+        self.report = Report.objects.create(
+            titulo='Bug test', descripcion='desc',
+            plataforma=self.plat, tipo=Report.BUG,
+            severidad=Report.ALTA, reportado_por=self.usuario,
+        )
+
+    def test_detail_loads(self):
+        self.client.force_login(self.usuario)
+        r = self.client.get(reverse('report_detail', args=[self.report.pk]))
+        self.assertContains(r, 'Bug test')
+
+    def test_change_status_requires_tester_or_admin(self):
+        self.client.force_login(self.usuario)
+        r = self.client.post(reverse('change_status', args=[self.report.pk]),
+            {'estado': Report.EN_REVISION})
+        self.assertEqual(r.status_code, 403)
+
+    def test_admin_can_change_status(self):
+        self.client.force_login(self.admin)
+        self.client.post(reverse('change_status', args=[self.report.pk]),
+            {'estado': Report.EN_REVISION})
+        self.report.refresh_from_db()
+        self.assertEqual(self.report.estado, Report.EN_REVISION)
+        self.assertEqual(StatusHistory.objects.filter(reporte=self.report).count(), 1)

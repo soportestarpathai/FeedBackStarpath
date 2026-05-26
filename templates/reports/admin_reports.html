@@ -1,0 +1,31 @@
+{% extends 'dashboard_base.html' %}
+{% block page_title %}Todos los Reportes{% endblock %}
+{% block page_heading %}Todos los Reportes{% endblock %}
+{% block nav_admin_rep %}active{% endblock %}
+{% block main_content %}
+<div class="bg-white rounded-xl border border-slate-200">
+  <div class="p-4 border-b border-slate-100 flex flex-wrap gap-3 items-center">
+    <select name="plataforma"
+      hx-get="{% url 'reports_table' %}" hx-trigger="change" hx-target="#tabla-reportes"
+      class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm outline-none">
+      <option value="">Todas las plataformas</option>
+      {% for p in platforms %}<option value="{{ p.pk }}">{{ p.nombre }}</option>{% endfor %}
+    </select>
+    <select name="estado"
+      hx-get="{% url 'reports_table' %}" hx-trigger="change" hx-target="#tabla-reportes"
+      class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm outline-none">
+      <option value="">Todos los estados</option>
+      {% for val, label in estado_choices %}<option value="{{ val }}">{{ label }}</option>{% endfor %}
+    </select>
+    <select name="tipo"
+      hx-get="{% url 'reports_table' %}" hx-trigger="change" hx-target="#tabla-reportes"
+      class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm outline-none">
+      <option value="">Todos los tipos</option>
+      {% for val, label in tipo_choices %}<option value="{{ val }}">{{ label }}</option>{% endfor %}
+    </select>
+  </div>
+  <div id="tabla-reportes">
+    {% include 'partials/reports_table.html' %}
+  </div>
+</div>
+{% endblock %}

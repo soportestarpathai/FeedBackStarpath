@@ -1,0 +1,124 @@
+{% extends 'dashboard_base.html' %}
+{% block page_title %}Reporte #{{ report.pk }}{% endblock %}
+{% block page_heading %}{{ report.titulo }}{% endblock %}
+{% block page_subtitle %}{{ report.plataforma.nombre }} · {{ report.creado_en|date:"d M Y, H:i" }}{% endblock %}
+{% block main_content %}
+<div class="grid grid-cols-3 gap-6">
+
+  <!-- Main info -->
+  <div class="col-span-2 space-y-4">
+    <div class="bg-white rounded-xl border border-slate-200 p-6">
+      <div class="flex gap-2 mb-4 flex-wrap">
+        <span class="text-xs font-semibold px-2 py-1 rounded
+          {% if report.tipo == 'BUG' %}bg-red-50 text-red-500
+          {% elif report.tipo == 'SUGERENCIA' %}bg-blue-50 text-blue-600
+          {% else %}bg-purple-50 text-purple-600{% endif %}">
+          {{ report.get_tipo_display }}
+        </span>
+        <span class="text-xs font-semibold px-2 py-1 rounded
+          {% if report.severidad == 'CRITICA' %}bg-red-50 text-red-500
+          {% elif report.severidad == 'ALTA' %}bg-orange-50 text-orange-500
+          {% elif report.severidad == 'MEDIA' %}bg-yellow-50 text-yellow-600
+          {% else %}bg-green-50 text-green-600{% endif %}">
+          {{ report.get_severidad_display }}
+        </span>
+      </div>
+      <p class="text-slate-600 text-sm leading-relaxed">{{ report.descripcion }}</p>
+
+      {% if report.url_pagina %}
+      <p class="mt-4 text-sm"><span class="font-medium text-slate-700">URL:</span>
+        <a href="{{ report.url_pagina }}" class="text-sky-500 hover:underline text-xs">{{ report.url_pagina }}</a>
+      </p>
+      {% endif %}
+
+      {% if report.pasos_reproducir %}
+      <div class="mt-4">
+        <p class="text-sm font-semibold text-slate-700 mb-1">Pasos para reproducir</p>
+        <pre class="bg-slate-50 text-xs rounded p-3 text-slate-600 whitespace-pre-wrap">{{ report.pasos_reproducir }}</pre>
+      </div>
+      {% endif %}
+
+      {% if report.resultado_esperado %}
+      <div class="grid grid-cols-2 gap-4 mt-4">
+        <div>
+          <p class="text-sm font-semibold text-slate-700 mb-1">Resultado esperado</p>
+          <p class="text-sm text-slate-600 bg-green-50 p-3 rounded">{{ report.resultado_esperado }}</p>
+        </div>
+        <div>
+          <p class="text-sm font-semibold text-slate-700 mb-1">Resultado obtenido</p>
+          <p class="text-sm text-slate-600 bg-red-50 p-3 rounded">{{ report.resultado_obtenido }}</p>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    {% if report.screenshots.all %}
+    <div class="bg-white rounded-xl border border-slate-200 p-6">
+      <h4 class="font-semibold mb-3 text-sm">Capturas de pantalla</h4>
+      <div class="flex flex-wrap gap-3">
+        {% for s in report.screenshots.all %}
+        <a href="{{ s.imagen.url }}" target="_blank">
+          <img src="{{ s.imagen.url }}" class="h-32 w-48 object-cover rounded-lg border border-slate-200 hover:opacity-90 transition">
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Sidebar -->
+  <div class="space-y-4">
+
+    <div class="bg-white rounded-xl border border-slate-200 p-5">
+      <h4 class="text-sm font-semibold mb-3">Estado actual</h4>
+      <div id="status-badge" class="mb-3">
+        {% include 'partials/status_badge.html' %}
+      </div>
+      {% if user.is_tester or user.is_admin %}
+      <form hx-post="{% url 'change_status' report.pk %}"
+            hx-target="#status-badge"
+            hx-swap="outerHTML">
+        {% csrf_token %}
+        <select name="estado"
+          class="w-full border border-slate-300 rounded-lg px-3 py-1.5 text-sm outline-none mb-2">
+          {% for val, label in estado_choices %}
+            <option value="{{ val }}" {% if report.estado == val %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit"
+          class="w-full bg-[#0a1628] text-white text-sm font-semibold py-2 rounded-lg hover:bg-[#162d5a] transition">
+          Actualizar estado
+        </button>
+      </form>
+      {% endif %}
+    </div>
+
+    <div class="bg-white rounded-xl border border-slate-200 p-5">
+      <h4 class="text-sm font-semibold mb-3">Información</h4>
+      <div class="space-y-2 text-xs text-slate-500">
+        <div><span class="font-medium text-slate-700">Plataforma:</span> {{ report.plataforma.nombre }}</div>
+        <div><span class="font-medium text-slate-700">Reportado por:</span> {{ report.reportado_por.email }}</div>
+        <div><span class="font-medium text-slate-700">Creado:</span> {{ report.creado_en|date:"d M Y, H:i" }}</div>
+        <div><span class="font-medium text-slate-700">Actualizado:</span> {{ report.actualizado_en|date:"d M Y, H:i" }}</div>
+      </div>
+    </div>
+
+    {% if report.historial.all %}
+    <div class="bg-white rounded-xl border border-slate-200 p-5">
+      <h4 class="text-sm font-semibold mb-3">Historial de estados</h4>
+      <div class="space-y-2">
+        {% for h in report.historial.all %}
+        <div class="text-xs text-slate-500 flex gap-2">
+          <span>{{ h.fecha|date:"d M, H:i" }}</span>
+          <span class="text-slate-300">→</span>
+          <span class="font-medium text-slate-700">{{ h.estado_nuevo }}</span>
+          <span class="text-slate-400">por {{ h.cambiado_por.email }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

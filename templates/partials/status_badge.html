@@ -1,0 +1,12 @@
+<span class="inline-flex items-center gap-1.5 text-sm font-semibold
+  {% if report.estado == 'ABIERTO' %}text-red-600
+  {% elif report.estado == 'EN_REVISION' %}text-yellow-600
+  {% elif report.estado == 'RESUELTO' %}text-green-600
+  {% else %}text-slate-500{% endif %}">
+  <span class="w-2 h-2 rounded-full
+    {% if report.estado == 'ABIERTO' %}bg-red-500
+    {% elif report.estado == 'EN_REVISION' %}bg-yellow-500
+    {% elif report.estado == 'RESUELTO' %}bg-green-500
+    {% else %}bg-slate-400{% endif %}"></span>
+  {{ report.get_estado_display }}
+</span>
