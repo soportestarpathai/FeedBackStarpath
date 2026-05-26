@@ -40,12 +40,13 @@ from apps.accounts.decorators import role_required
 
 @role_required(User.ADMIN)
 def admin_users_view(request):
-    users = User.objects.all().order_by('rol', 'email')
     if request.method == 'POST':
         user_id = request.POST.get('user_id')
         new_rol = request.POST.get('rol')
-        if new_rol in [User.USUARIO, User.TESTER, User.ADMIN]:
-            User.objects.filter(pk=user_id).update(rol=new_rol)
+        if new_rol in [User.USUARIO, User.TESTER, User.ADMIN] and user_id:
+            User.objects.filter(pk=int(user_id)).update(rol=new_rol)
+        return redirect('admin_users')
+    users = User.objects.all().order_by('rol', 'email')
     return render(request, 'accounts/admin_users.html', {
         'users': users,
         'rol_choices': User.ROL_CHOICES,
