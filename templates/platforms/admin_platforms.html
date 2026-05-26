@@ -54,13 +54,18 @@
             </span>
           </td>
           <td class="px-4 py-3 flex gap-2">
-            <a href="{% url 'platform_toggle' p.pk %}"
-              class="text-xs text-sky-600 hover:underline">
-              {% if p.activa %}Desactivar{% else %}Activar{% endif %}
-            </a>
-            <a href="{% url 'platform_delete' p.pk %}"
-              class="text-xs text-red-500 hover:underline"
-              onclick="return confirm('¿Eliminar {{ p.nombre }}?')">Eliminar</a>
+            <form method="post" action="{% url 'platform_toggle' p.pk %}">
+              {% csrf_token %}
+              <button type="submit" class="text-xs text-sky-600 hover:underline bg-transparent border-none cursor-pointer p-0">
+                {% if p.activa %}Desactivar{% else %}Activar{% endif %}
+              </button>
+            </form>
+            <form method="post" action="{% url 'platform_delete' p.pk %}" onsubmit="return confirm('¿Eliminar {{ p.nombre }}?')">
+              {% csrf_token %}
+              <button type="submit" class="text-xs text-red-500 hover:underline bg-transparent border-none cursor-pointer p-0">
+                Eliminar
+              </button>
+            </form>
           </td>
         </tr>
         {% empty %}

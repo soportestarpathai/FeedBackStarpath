@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views.decorators.http import require_POST
 from apps.accounts.decorators import role_required
 from apps.accounts.models import User
 from apps.platforms.models import Platform
@@ -19,6 +20,7 @@ def admin_platforms_view(request):
     })
 
 @role_required(User.ADMIN)
+@require_POST
 def platform_toggle_view(request, pk):
     p = get_object_or_404(Platform, pk=pk)
     p.activa = not p.activa
@@ -26,6 +28,7 @@ def platform_toggle_view(request, pk):
     return redirect('admin_platforms')
 
 @role_required(User.ADMIN)
+@require_POST
 def platform_delete_view(request, pk):
     get_object_or_404(Platform, pk=pk).delete()
     return redirect('admin_platforms')
