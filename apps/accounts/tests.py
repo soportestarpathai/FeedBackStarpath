@@ -1,4 +1,5 @@
-from django.test import TestCase
+from django.test import TestCase, Client
+from django.urls import reverse
 from apps.accounts.models import User
 
 class UserModelTest(TestCase):
@@ -39,3 +40,48 @@ class UserModelTest(TestCase):
         )
         self.assertTrue(tester.is_tester)
         self.assertFalse(tester.is_admin)
+
+
+class AuthViewsTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            username='gustavo',
+            email='gustavo@test.com',
+            password='testpass123',
+        )
+
+    def test_login_page_loads(self):
+        r = self.client.get(reverse('login'))
+        self.assertEqual(r.status_code, 200)
+
+    def test_login_with_valid_credentials(self):
+        r = self.client.post(reverse('login'), {
+            'email': 'gustavo@test.com',
+            'password': 'testpass123',
+        })
+        self.assertRedirects(r, '/', fetch_redirect_response=False)
+
+    def test_login_with_wrong_password(self):
+        r = self.client.post(reverse('login'), {
+            'email': 'gustavo@test.com',
+            'password': 'wrong',
+        })
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, 'Credenciales incorrectas')
+
+    def test_register_creates_user_as_usuario(self):
+        r = self.client.post(reverse('register'), {
+            'username': 'nuevo',
+            'email': 'nuevo@test.com',
+            'password1': 'Seguro123!',
+            'password2': 'Seguro123!',
+        })
+        self.assertRedirects(r, '/login/')
+        u = User.objects.get(email='nuevo@test.com')
+        self.assertEqual(u.rol, User.USUARIO)
+
+    def test_logout_redirects(self):
+        self.client.force_login(self.user)
+        r = self.client.post(reverse('logout'))
+        self.assertRedirects(r, '/login/')

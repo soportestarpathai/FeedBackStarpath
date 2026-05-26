@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-[#0a1628]">
+  <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
+    <h1 class="text-xl font-bold text-[#0a1628] mb-1">Crear cuenta</h1>
+    <p class="text-slate-500 text-sm mb-6">Tu cuenta tendrá rol de Usuario básico.</p>
+    <form method="post">
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-slate-700 mb-1">{{ field.label }}</label>
+          <input name="{{ field.html_name }}" type="{{ field.field.widget.input_type }}"
+            class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400">
+          {% if field.errors %}
+            <p class="text-red-500 text-xs mt-1">{{ field.errors|join:", " }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+      <button type="submit"
+        class="w-full bg-[#0a1628] text-white font-semibold py-2.5 rounded-lg hover:bg-[#162d5a] transition">
+        Registrarse
+      </button>
+    </form>
+    <p class="text-center text-sm text-slate-500 mt-4">
+      ¿Ya tienes cuenta? <a href="{% url 'login' %}" class="text-sky-500 hover:underline">Iniciar sesión</a>
+    </p>
+  </div>
+</div>
+{% endblock %}
