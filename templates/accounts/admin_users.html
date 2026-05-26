@@ -1,0 +1,44 @@
+{% extends 'dashboard_base.html' %}
+{% block page_title %}Gestión de Usuarios{% endblock %}
+{% block main_content %}
+<div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+  <table class="w-full">
+    <thead class="bg-slate-50 text-xs font-bold text-slate-500 uppercase tracking-wide">
+      <tr>
+        <th class="px-4 py-3 text-left">Usuario</th>
+        <th class="px-4 py-3 text-left">Email</th>
+        <th class="px-4 py-3 text-left">Rol actual</th>
+        <th class="px-4 py-3 text-left">Cambiar rol</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr class="border-t border-slate-100 hover:bg-slate-50">
+        <td class="px-4 py-3 font-medium">{{ u.username }}</td>
+        <td class="px-4 py-3 text-slate-500">{{ u.email }}</td>
+        <td class="px-4 py-3">
+          <span class="text-xs font-semibold px-2 py-1 rounded
+            {% if u.rol == 'ADMIN' %}bg-sky-100 text-sky-700
+            {% elif u.rol == 'TESTER' %}bg-purple-100 text-purple-700
+            {% else %}bg-slate-100 text-slate-600{% endif %}">
+            {{ u.get_rol_display }}
+          </span>
+        </td>
+        <td class="px-4 py-3">
+          <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="user_id" value="{{ u.pk }}">
+            <select name="rol" onchange="this.form.submit()"
+              class="text-xs border border-slate-300 rounded px-2 py-1">
+              {% for val, label in rol_choices %}
+                <option value="{{ val }}" {% if u.rol == val %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

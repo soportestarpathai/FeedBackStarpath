@@ -85,3 +85,22 @@ class AuthViewsTest(TestCase):
         self.client.force_login(self.user)
         r = self.client.post(reverse('logout'))
         self.assertRedirects(r, '/login/')
+
+
+class RoleDecoratorTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.usuario = User.objects.create_user(
+            username='u', email='u@t.com', password='pass', rol=User.USUARIO)
+        self.admin = User.objects.create_user(
+            username='a', email='a@t.com', password='pass', rol=User.ADMIN)
+
+    def test_admin_only_view_blocks_usuario(self):
+        self.client.force_login(self.usuario)
+        r = self.client.get(reverse('admin_users'))
+        self.assertEqual(r.status_code, 403)
+
+    def test_admin_only_view_allows_admin(self):
+        self.client.force_login(self.admin)
+        r = self.client.get(reverse('admin_users'))
+        self.assertEqual(r.status_code, 200)
