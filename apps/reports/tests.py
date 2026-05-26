@@ -101,3 +101,37 @@ class DashboardViewTest(TestCase):
         r = self.client.get(reverse('reports_table'), {'q': 'Login'})
         self.assertContains(r, 'Login falla')
         self.assertNotContains(r, 'PDF error')
+
+class NewReportViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.plat = Platform.objects.create(nombre='EVE 360', color='#0ea5e9')
+        self.usuario = User.objects.create_user(
+            username='u', email='u@t.com', password='p', rol=User.USUARIO)
+        self.tester = User.objects.create_user(
+            username='t', email='t@t.com', password='p', rol=User.TESTER)
+
+    def test_usuario_can_create_basic_report(self):
+        self.client.force_login(self.usuario)
+        r = self.client.post(reverse('new_report'), {
+            'titulo': 'Login falla', 'descripcion': 'No redirige',
+            'plataforma': self.plat.pk, 'tipo': Report.BUG,
+            'severidad': Report.ALTA,
+        })
+        self.assertEqual(Report.objects.count(), 1)
+        report = Report.objects.first()
+        self.assertEqual(report.reportado_por, self.usuario)
+        self.assertRedirects(r, f'/reportes/{report.pk}/')
+
+    def test_tester_can_create_full_report(self):
+        self.client.force_login(self.tester)
+        r = self.client.post(reverse('new_report'), {
+            'titulo': 'Error XML', 'descripcion': 'Falla al exportar',
+            'plataforma': self.plat.pk, 'tipo': Report.BUG,
+            'severidad': Report.CRITICA,
+            'pasos_reproducir': '1. Ir a exportar\n2. Click en XML',
+            'resultado_esperado': 'Descarga el archivo',
+            'resultado_obtenido': 'Error 500',
+        })
+        self.assertEqual(Report.objects.count(), 1)
+        self.assertEqual(Report.objects.first().pasos_reproducir, '1. Ir a exportar\n2. Click en XML')

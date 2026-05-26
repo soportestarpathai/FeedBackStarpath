@@ -3,7 +3,8 @@ from django.contrib.auth.decorators import login_required
 from apps.accounts.decorators import role_required
 from apps.accounts.models import User
 from apps.platforms.models import Platform
-from apps.reports.models import Report, StatusHistory
+from apps.reports.models import Report, Screenshot, StatusHistory
+from apps.reports.forms import ReportForm
 from django.http import HttpResponse
 
 
@@ -50,10 +51,17 @@ def _get_filtered_reports(request):
     return qs
 
 
-# Stubs — replace in Tasks 9-10
 @login_required
 def new_report_view(request):
-    return HttpResponse('TODO')
+    form = ReportForm(request.POST or None, user=request.user)
+    if request.method == 'POST' and form.is_valid():
+        report = form.save(commit=False)
+        report.reportado_por = request.user
+        report.save()
+        for img in request.FILES.getlist('screenshots'):
+            Screenshot.objects.create(reporte=report, imagen=img)
+        return redirect('report_detail', pk=report.pk)
+    return render(request, 'reports/new_report.html', {'form': form})
 
 @login_required
 def report_detail_view(request, pk):
