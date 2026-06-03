@@ -2,6 +2,6 @@ from django.urls import path
 from apps.exports import views
 
 urlpatterns = [
-    path('exports/pdf/',          views.pdf_form_view,     name='pdf_form'),
-    path('exports/pdf/download/', views.pdf_download_view, name='pdf_download'),
+    path('admin/pdf/',      views.exportar_pdf, name='admin_pdf'),
+    path('superadmin/pdf/', views.exportar_pdf, name='sa_pdf'),
 ]
