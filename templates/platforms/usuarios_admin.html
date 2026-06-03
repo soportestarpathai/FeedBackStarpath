@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load report_tags %}
+{% block title %}Usuarios — FeedbackEve{% endblock %}
+{% block nav_ad_users %}active{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-6 py-6">
+
+  <div class="mb-5">
+    <h1 class="text-xl font-bold" style="color:#0f172a;">Usuarios</h1>
+    <p class="text-sm mt-0.5" style="color:#64748b;">Gestión de Testers y Usuarios de tu plataforma</p>
+  </div>
+
+  <div class="mb-4 px-4 py-2.5 rounded-lg text-sm flex items-center gap-2"
+       style="background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;">
+    ℹ Solo puedes asignar roles <strong>Tester</strong> o <strong>Usuario</strong>. Para crear Admins contacta al SuperAdmin.
+  </div>
+
+  <!-- Filtros -->
+  <div class="bg-white rounded-xl p-4 mb-4 flex flex-wrap gap-3 items-center" style="border:1px solid #e2e8f0;">
+    <div class="flex items-center gap-2 flex-1 min-w-48" style="border:1.5px solid #e2e8f0;border-radius:8px;padding:0 10px;background:#f8fafc;">
+      <svg width="14" height="14" fill="none" stroke="#94a3b8" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <form method="get" class="flex-1">
+        <input type="text" name="q" placeholder="Buscar usuario..." value="{{ request.GET.q }}"
+               class="w-full py-2 text-sm outline-none bg-transparent" style="color:#0f172a;"
+               onchange="this.form.submit()">
+      </form>
+    </div>
+
+    <form method="get" class="flex gap-3">
+      {% if request.GET.q %}<input type="hidden" name="q" value="{{ request.GET.q }}">{% endif %}
+      <select name="rol" onchange="this.form.submit()" class="px-3 py-2 rounded-lg text-sm outline-none"
+              style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;">
+        <option value="">Todos los roles</option>
+        <option value="TESTER" {% if request.GET.rol == 'TESTER' %}selected{% endif %}>Tester</option>
+        <option value="USUARIO" {% if request.GET.rol == 'USUARIO' %}selected{% endif %}>Usuario</option>
+      </select>
+      <select name="estado" onchange="this.form.submit()" class="px-3 py-2 rounded-lg text-sm outline-none"
+              style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;">
+        <option value="">Estado</option>
+        <option value="activo" {% if request.GET.estado == 'activo' %}selected{% endif %}>Activo</option>
+        <option value="inactivo" {% if request.GET.estado == 'inactivo' %}selected{% endif %}>Inactivo</option>
+      </select>
+    </form>
+  </div>
+
+  <!-- Tabla -->
+  <div class="bg-white rounded-xl overflow-hidden" style="border:1px solid #e2e8f0;">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm" style="table-layout:auto;">
+        <thead>
+          <tr style="border-bottom:1px solid #e2e8f0;background:#f8fafc;">
+            <th class="text-left px-4 py-3 text-xs font-semibold uppercase" style="color:#64748b;">Usuario</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold uppercase" style="color:#64748b;">Correo</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold uppercase" style="color:#64748b;">Rol</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold uppercase" style="color:#64748b;">Reportes</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold uppercase" style="color:#64748b;">Estado</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold uppercase" style="color:#64748b;">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in usuarios %}
+            {% include 'partials/fila_usuario_admin.html' %}
+          {% empty %}
+          <tr>
+            <td colspan="6" class="px-4 py-8 text-center text-sm" style="color:#94a3b8;">
+              No se encontraron usuarios en tu plataforma
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="px-4 py-3" style="border-top:1px solid #e2e8f0;">
+      <span class="text-xs" style="color:#94a3b8;">{{ usuarios|length }} usuario{{ usuarios|length|pluralize }}</span>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

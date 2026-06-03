@@ -1,0 +1,58 @@
+{% load report_tags %}
+<tr id="fila-user-{{ u.pk }}" style="border-bottom:1px solid #f1f5f9;" class="hover:bg-slate-50">
+  <td class="px-4 py-3">
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+           style="background:{% if u.rol == 'TESTER' %}#059669{% else %}#6b7280{% endif %};">
+        {% if u.first_name %}{{ u.first_name.0|upper }}{% if u.last_name %}{{ u.last_name.0|upper }}{% endif %}{% else %}{{ u.email.0|upper }}{% endif %}
+      </div>
+      <div>
+        <div class="text-sm font-medium" style="color:#0f172a;">{{ u.get_full_name|default:"—" }}</div>
+        {% if not u.is_active %}<div class="text-xs" style="color:#94a3b8;">Invitación pendiente</div>{% endif %}
+      </div>
+    </div>
+  </td>
+  <td class="px-4 py-3 text-xs" style="color:#64748b;">{{ u.email }}</td>
+  <td class="px-4 py-3">
+    <form hx-post="/admin/usuarios/{{ u.pk }}/rol/"
+          hx-target="#fila-user-{{ u.pk }}"
+          hx-swap="outerHTML"
+          hx-include="this">
+      {% csrf_token %}
+      <select name="rol" onchange="this.form.requestSubmit()"
+              class="text-xs px-2 py-1.5 rounded-md outline-none cursor-pointer"
+              style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;">
+        <option value="TESTER" {% if u.rol == 'TESTER' %}selected{% endif %}>Tester</option>
+        <option value="USUARIO" {% if u.rol == 'USUARIO' %}selected{% endif %}>Usuario</option>
+      </select>
+    </form>
+  </td>
+  <td class="px-4 py-3 text-sm" style="color:#374151;">{{ u.reportes_creados.count }}</td>
+  <td class="px-4 py-3">
+    {% if u.is_active %}
+      <div class="flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full" style="background:#059669;"></span>
+        <span class="text-xs" style="color:#374151;">Activo</span>
+      </div>
+    {% else %}
+      <div class="flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full" style="background:#d97706;"></span>
+        <span class="text-xs" style="color:#d97706;">Pendiente</span>
+      </div>
+    {% endif %}
+  </td>
+  <td class="px-4 py-3" style="white-space:nowrap;">
+    <a href="/admin/reportes/?reportado_por={{ u.pk }}"
+       class="text-xs px-2.5 py-1.5 rounded-md mr-1"
+       style="border:1px solid #e2e8f0;color:#374151;"
+       onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">Ver reportes</a>
+    {% if u.is_active %}
+    <form method="post" action="/admin/usuarios/{{ u.pk }}/rol/" class="inline">
+      {% csrf_token %}
+      <input type="hidden" name="desactivar" value="1">
+      <button type="submit" class="text-xs px-2.5 py-1.5 rounded-md"
+              style="border:1px solid #e2e8f0;color:#64748b;background:transparent;cursor:pointer;">Desactivar</button>
+    </form>
+    {% endif %}
+  </td>
+</tr>

@@ -1,0 +1,5 @@
+{% for r in reportes %}
+  {% include 'partials/fila_sa.html' %}
+{% empty %}
+<tr><td colspan="8" class="px-4 py-8 text-center text-sm" style="color:#94a3b8;">No se encontraron reportes</td></tr>
+{% endfor %}

@@ -1,0 +1,285 @@
+{% extends 'base.html' %}
+{% load report_tags %}
+{% block title %}Nuevo Reporte — FeedbackEve{% endblock %}
+{% block nav_te_new %}active{% endblock %}
+{% block content %}
+<div class="max-w-7xl mx-auto px-6 py-6">
+
+  <div class="flex items-center justify-between mb-5">
+    <div>
+      <h1 class="text-xl font-bold" style="color:#0f172a;">Nuevo Reporte</h1>
+      <p class="text-sm mt-0.5" style="color:#64748b;">Formulario técnico completo</p>
+    </div>
+    <a href="/reportes/" class="px-4 py-2 rounded-lg text-sm font-medium" style="border:1px solid #e2e8f0;color:#374151;">Cancelar</a>
+  </div>
+
+  <div class="mb-4 px-4 py-2.5 rounded-lg text-sm flex items-center gap-2"
+       style="background:#ecfdf5;border:1px solid #6ee7b7;color:#065f46;">
+    ℹ Como Tester tienes acceso a los campos técnicos. Severidad máxima: <strong>Alta</strong>.
+  </div>
+
+  <form method="post" enctype="multipart/form-data"
+        x-data="{
+          rfs: ['',''],
+          rnfs: [{cat:'',desc:''},{cat:'',desc:''}],
+          addRF(){ this.rfs.push('') },
+          removeRF(i){ if(this.rfs.length>1) this.rfs.splice(i,1) },
+          addRNF(){ this.rnfs.push({cat:'',desc:''}) },
+          removeRNF(i){ if(this.rnfs.length>1) this.rnfs.splice(i,1) }
+        }">
+    {% csrf_token %}
+
+    <div class="grid gap-5" style="grid-template-columns:2fr 1fr;">
+
+      <!-- Columna izquierda -->
+      <div class="flex flex-col gap-4">
+
+        <!-- Info general -->
+        <div class="bg-white rounded-xl p-5" style="border:1px solid #e2e8f0;">
+          <h3 class="font-semibold text-sm mb-4" style="color:#0f172a;">Información general</h3>
+          <div class="flex flex-col gap-3">
+            <div>
+              <label class="block text-xs font-medium mb-1.5" style="color:#374151;">Título *</label>
+              <input type="text" name="titulo" required placeholder="Ej. Error 404 al acceder a pasarela de pagos"
+                     class="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
+                     style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#0f172a;"
+                     onfocus="this.style.borderColor='#2563eb'" onblur="this.style.borderColor='#e2e8f0'">
+            </div>
+            <div class="grid grid-cols-3 gap-3">
+              <div>
+                <label class="block text-xs font-medium mb-1.5" style="color:#374151;">Plataforma *</label>
+                <select name="plataforma" required class="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
+                        style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;">
+                  <option value="">Seleccionar</option>
+                  {% for p in plataformas %}<option value="{{ p.pk }}">{{ p.nombre }}</option>{% endfor %}
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-medium mb-1.5" style="color:#374151;">Tipo *</label>
+                <select name="tipo" required class="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
+                        style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;">
+                  {% for val, label in tipo_choices %}<option value="{{ val }}">{{ label }}</option>{% endfor %}
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-medium mb-1.5" style="color:#374151;">Severidad *</label>
+                <select name="severidad" class="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
+                        style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;">
+                  {% for val, label in sev_choices %}<option value="{{ val }}">{{ label }}</option>{% endfor %}
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-medium mb-1.5" style="color:#374151;">Descripción *</label>
+              <textarea name="descripcion" required rows="3" placeholder="Describe el problema con detalle..."
+                        class="w-full px-3 py-2.5 rounded-lg text-sm outline-none resize-none"
+                        style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#0f172a;"
+                        onfocus="this.style.borderColor='#2563eb'" onblur="this.style.borderColor='#e2e8f0'"></textarea>
+            </div>
+            <div>
+              <label class="block text-xs font-medium mb-1.5" style="color:#374151;">URL de la página</label>
+              <input type="url" name="url_pagina" placeholder="https://app.eve360.mx/ruta"
+                     class="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
+                     style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#0f172a;"
+                     onfocus="this.style.borderColor='#2563eb'" onblur="this.style.borderColor='#e2e8f0'">
+            </div>
+          </div>
+        </div>
+
+        <!-- Análisis técnico -->
+        <div class="rounded-xl overflow-hidden" style="border:1px solid #6ee7b7;">
+          <div class="px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-white" style="background:#059669;">
+            Análisis Técnico — Tester
+          </div>
+          <div class="p-5 flex flex-col gap-3" style="background:#f0fdf4;">
+            <div>
+              <label class="block text-xs font-medium mb-1.5" style="color:#374151;">Pasos para reproducir</label>
+              <textarea name="pasos_reproducir" rows="3" placeholder="1. Iniciar sesión&#10;2. Navegar a..."
+                        class="w-full px-3 py-2.5 rounded-lg text-sm outline-none resize-none"
+                        style="border:1.5px solid #d1fae5;background:#fff;color:#0f172a;"></textarea>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-medium mb-1.5" style="color:#374151;">Resultado esperado</label>
+                <input type="text" name="resultado_esperado" placeholder="Redirección exitosa"
+                       class="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
+                       style="border:1.5px solid #d1fae5;background:#fff;color:#0f172a;">
+              </div>
+              <div>
+                <label class="block text-xs font-medium mb-1.5" style="color:#374151;">Resultado obtenido</label>
+                <input type="text" name="resultado_obtenido" placeholder="Crash inesperado"
+                       class="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
+                       style="border:1.5px solid #d1fae5;background:#fff;color:#0f172a;">
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-medium mb-1.5" style="color:#374151;">Navegador</label>
+                <input type="text" name="navegador" placeholder="Chrome v124.0.0"
+                       class="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
+                       style="border:1.5px solid #d1fae5;background:#fff;color:#0f172a;">
+              </div>
+              <div>
+                <label class="block text-xs font-medium mb-1.5" style="color:#374151;">Sistema operativo</label>
+                <input type="text" name="sistema_operativo" placeholder="macOS Sonoma 14.4"
+                       class="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
+                       style="border:1.5px solid #d1fae5;background:#fff;color:#0f172a;">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RF -->
+        <div class="rounded-xl overflow-hidden" style="border:1px solid #bbf7d0;">
+          <div class="px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-white" style="background:#059669;">
+            Requisitos Funcionales (RF) — Tester
+          </div>
+          <div class="p-5" style="background:#f0fdf4;">
+            <p class="text-xs mb-3 leading-relaxed" style="color:#065f46;">
+              Describe lo que el sistema <strong>debe hacer</strong> según el flujo reportado.
+            </p>
+            <div class="flex flex-col gap-2">
+              <template x-for="(rf, i) in rfs" :key="i">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-bold flex-shrink-0 w-8" style="color:#059669;" x-text="'RF'+(i+1)"></span>
+                  <input type="text" name="rf_items" x-model="rfs[i]" placeholder="El sistema debe..."
+                         class="flex-1 px-3 py-2 rounded-lg text-sm outline-none"
+                         style="border:1.5px solid #d1fae5;background:#fff;color:#0f172a;">
+                  <button type="button" @click="removeRF(i)"
+                          style="background:none;border:none;color:#9ca3af;font-size:18px;cursor:pointer;padding:0 4px;line-height:1;"
+                          onmouseover="this.style.color='#dc2626'" onmouseout="this.style.color='#9ca3af'">×</button>
+                </div>
+              </template>
+            </div>
+            <button type="button" @click="addRF()" class="mt-3 w-full py-2 rounded-lg text-xs font-medium"
+                    style="border:1.5px dashed #6ee7b7;color:#059669;background:#fff;">
+              + Agregar requisito funcional
+            </button>
+          </div>
+        </div>
+
+        <!-- RNF -->
+        <div class="rounded-xl overflow-hidden" style="border:1px solid #c7d2fe;">
+          <div class="px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-white" style="background:#4f46e5;">
+            Requisitos No Funcionales (RNF) — Tester
+          </div>
+          <div class="p-5" style="background:#f5f3ff;">
+            <p class="text-xs mb-3 leading-relaxed" style="color:#3730a3;">
+              Restricciones de <strong>calidad</strong>: rendimiento, seguridad, usabilidad, disponibilidad.
+            </p>
+            <div class="flex flex-col gap-3">
+              <template x-for="(rnf, i) in rnfs" :key="i">
+                <div class="flex items-start gap-2">
+                  <span class="text-xs font-bold flex-shrink-0 w-10 mt-2.5" style="color:#4f46e5;" x-text="'RNF'+(i+1)"></span>
+                  <div class="flex-1 flex flex-col gap-1.5">
+                    <select name="rnf_categorias" x-model="rnf.cat"
+                            class="w-full px-3 py-2 rounded-lg text-xs outline-none"
+                            style="border:1.5px solid #c7d2fe;background:#fff;color:#374151;">
+                      <option value="">Categoría</option>
+                      <option>Rendimiento</option><option>Seguridad</option><option>Usabilidad</option>
+                      <option>Disponibilidad</option><option>Escalabilidad</option><option>Mantenibilidad</option>
+                    </select>
+                    <input type="text" name="rnf_descripciones" x-model="rnf.desc"
+                           placeholder="El sistema debe responder en menos de 2 segundos..."
+                           class="w-full px-3 py-2 rounded-lg text-sm outline-none"
+                           style="border:1.5px solid #c7d2fe;background:#fff;color:#0f172a;">
+                  </div>
+                  <button type="button" @click="removeRNF(i)"
+                          style="background:none;border:none;color:#9ca3af;font-size:18px;cursor:pointer;padding:0 4px;margin-top:6px;line-height:1;"
+                          onmouseover="this.style.color='#dc2626'" onmouseout="this.style.color='#9ca3af'">×</button>
+                </div>
+              </template>
+            </div>
+            <button type="button" @click="addRNF()" class="mt-3 w-full py-2 rounded-lg text-xs font-medium"
+                    style="border:1.5px dashed #a5b4fc;color:#4f46e5;background:#fff;">
+              + Agregar requisito no funcional
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Columna derecha -->
+      <div class="flex flex-col gap-4">
+        <div class="bg-white rounded-xl p-5" style="border:1px solid #e2e8f0;">
+          <h3 class="font-semibold text-sm mb-3" style="color:#0f172a;">Evidencia</h3>
+          <div x-data="{
+            previews: [],
+            addFiles(e) {
+              const files = Array.from(e.target.files);
+              files.forEach(f => {
+                const reader = new FileReader();
+                reader.onload = ev => this.previews.push({ src: ev.target.result, name: f.name });
+                reader.readAsDataURL(f);
+              });
+            },
+            remove(i) {
+              this.previews.splice(i, 1);
+            }
+          }">
+            <!-- Zona de drop -->
+            <label class="block w-full py-6 text-center rounded-xl cursor-pointer transition"
+                   style="border:2px dashed #cbd5e1;background:#f8fafc;"
+                   @dragover.prevent="$el.style.borderColor='#2563eb';$el.style.background='#eff6ff'"
+                   @dragleave.prevent="$el.style.borderColor='#cbd5e1';$el.style.background='#f8fafc'"
+                   @drop.prevent="$el.style.borderColor='#cbd5e1';$el.style.background='#f8fafc'; addFiles({target:{files:$event.dataTransfer.files}})">
+              <input type="file" name="screenshots" multiple accept="image/*" class="hidden"
+                     @change="addFiles($event)">
+              <p class="text-sm" style="color:#64748b;">
+                Arrastra imágenes o <span style="color:#2563eb;text-decoration:underline;">selecciona archivos</span>
+              </p>
+              <p class="text-xs mt-1" style="color:#94a3b8;">.png .jpg .jpeg — múltiples archivos</p>
+            </label>
+
+            <!-- Previews -->
+            <div x-show="previews.length > 0" class="mt-3 flex flex-wrap gap-2">
+              <template x-for="(p, i) in previews" :key="i">
+                <div class="relative group" style="width:80px;height:80px;">
+                  <img :src="p.src" :alt="p.name"
+                       class="w-full h-full object-cover rounded-lg"
+                       style="border:1px solid #e2e8f0;">
+                  <button type="button"
+                          @click="remove(i)"
+                          class="absolute top-0.5 right-0.5 w-5 h-5 rounded-full flex items-center justify-center text-white text-xs font-bold opacity-0 group-hover:opacity-100 transition"
+                          style="background:rgba(220,38,38,0.85);">
+                    ×
+                  </button>
+                  <div class="absolute bottom-0 left-0 right-0 px-1 py-0.5 rounded-b-lg text-white truncate"
+                       style="font-size:9px;background:rgba(0,0,0,0.5);" x-text="p.name"></div>
+                </div>
+              </template>
+            </div>
+
+            <p x-show="previews.length > 0" class="text-xs mt-2" style="color:#94a3b8;">
+              <span x-text="previews.length"></span> archivo<span x-show="previews.length > 1">s</span> seleccionado<span x-show="previews.length > 1">s</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl p-5" style="border:1px solid #e2e8f0;">
+          <h3 class="font-semibold text-sm mb-3" style="color:#0f172a;">Entorno</h3>
+          <div class="flex flex-col gap-2">
+            <label class="flex items-center gap-2 text-sm cursor-pointer" style="color:#374151;">
+              <input type="radio" name="entorno" value="produccion" checked> Producción
+            </label>
+            <label class="flex items-center gap-2 text-sm cursor-pointer" style="color:#374151;">
+              <input type="radio" name="entorno" value="staging"> Staging / QA
+            </label>
+            <label class="flex items-center gap-2 text-sm cursor-pointer" style="color:#374151;">
+              <input type="radio" name="entorno" value="localhost"> Localhost
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full py-3 rounded-lg text-sm font-semibold text-white"
+                style="background:#2563eb;" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'">
+          Enviar Reporte
+        </button>
+        <a href="/reportes/" class="block w-full py-2.5 rounded-lg text-sm font-medium text-center"
+           style="border:1px solid #e2e8f0;color:#374151;">Cancelar</a>
+      </div>
+
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+<div id="card-plat-{{ item.plataforma.pk }}" class="bg-white rounded-xl p-5" style="border:1px solid #e2e8f0;">
+  <div class="flex items-center justify-between mb-2">
+    <div class="flex items-center gap-2">
+      <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:{{ item.plataforma.color }};"></span>
+      <span class="font-semibold text-sm" style="color:#0f172a;">{{ item.plataforma.nombre }}</span>
+    </div>
+    {% if item.plataforma.activa %}
+      <span class="text-xs font-medium px-2 py-0.5 rounded-full" style="background:#d1fae5;color:#065f46;">Activa</span>
+    {% else %}
+      <span class="text-xs font-medium px-2 py-0.5 rounded-full" style="background:#f1f5f9;color:#94a3b8;">Inactiva</span>
+    {% endif %}
+  </div>
+  {% if item.plataforma.descripcion %}
+  <p class="text-xs mb-2" style="color:#64748b;">{{ item.plataforma.descripcion }}</p>
+  {% endif %}
+  {% if not item.admins %}
+  <div class="mb-2 px-2 py-1 rounded text-xs" style="background:#fef2f2;color:#dc2626;">⚠ Sin admin asignado</div>
+  {% endif %}
+  <p class="text-xs mb-4" style="color:#94a3b8;">{{ item.abiertos }} abiertos · {{ item.totales }} totales</p>
+  <div class="flex gap-2">
+    <form hx-post="/superadmin/plataformas/{{ item.plataforma.pk }}/toggle/"
+          hx-target="#card-plat-{{ item.plataforma.pk }}"
+          hx-swap="outerHTML"
+          style="flex:1;">
+      {% csrf_token %}
+      <button type="submit"
+              class="w-full py-1.5 rounded-lg text-xs font-medium"
+              style="border:1.5px solid #e2e8f0;color:#374151;background:transparent;cursor:pointer;">
+        {% if item.plataforma.activa %}Desactivar{% else %}Activar{% endif %}
+      </button>
+    </form>
+    <form method="post" action="/superadmin/plataformas/{{ item.plataforma.pk }}/eliminar/"
+          style="flex:1;"
+          onsubmit="return confirm('¿Eliminar {{ item.plataforma.nombre }}?')">
+      {% csrf_token %}
+      <button type="submit"
+              class="w-full py-1.5 rounded-lg text-xs font-medium"
+              style="border:1.5px solid #fecaca;color:#dc2626;background:transparent;cursor:pointer;">
+        Eliminar
+      </button>
+    </form>
+  </div>
+</div>

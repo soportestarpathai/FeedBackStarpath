@@ -1,0 +1,38 @@
+{% load report_tags %}
+<tr id="fila-admin-{{ r.pk }}" style="border-bottom:1px solid #f1f5f9;" class="hover:bg-slate-50">
+  <td class="px-4 py-3 text-xs" style="color:#94a3b8;">#{{ r.pk }}</td>
+  <td class="px-4 py-3" style="max-width:220px;">
+    <div class="font-medium text-sm truncate" style="color:#0f172a;">{{ r.titulo }}</div>
+    <div class="text-xs mt-0.5" style="color:#94a3b8;">{{ r.reportado_por.email }}</div>
+  </td>
+  <td class="px-4 py-3">{% badge_tipo r.tipo %}</td>
+  <td class="px-4 py-3">{% badge_severidad r.severidad %}</td>
+  <td class="px-4 py-3">
+    <form hx-post="/admin/reportes/{{ r.pk }}/estado/"
+          hx-target="#fila-admin-{{ r.pk }}"
+          hx-swap="outerHTML"
+          hx-include="this">
+      {% csrf_token %}
+      <select name="estado" onchange="this.form.requestSubmit()"
+              class="text-xs px-2 py-1.5 rounded-md outline-none cursor-pointer"
+              style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;">
+        {% for val, label in r.ESTADO_CHOICES %}
+          <option value="{{ val }}" {% if r.estado == val %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </form>
+  </td>
+  <td class="px-4 py-3">
+    {% if r.asignado_a %}
+      <span class="text-xs font-medium" style="color:#374151;">{{ r.asignado_a.get_full_name|default:r.asignado_a.email }}</span>
+    {% else %}
+      <span class="text-xs" style="color:#94a3b8;">— Sin asignar</span>
+    {% endif %}
+  </td>
+  <td class="px-4 py-3">
+    <a href="/admin/reportes/{{ r.pk }}/"
+       class="text-xs px-3 py-1.5 rounded-md font-medium"
+       style="border:1px solid #e2e8f0;color:#374151;white-space:nowrap;"
+       onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">Ver →</a>
+  </td>
+</tr>

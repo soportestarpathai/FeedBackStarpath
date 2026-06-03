@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Administradores — FeedbackEve{% endblock %}
+{% block nav_sa_admins %}active{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-6 py-6">
+  <div class="flex items-center justify-between mb-5">
+    <div>
+      <h1 class="text-xl font-bold" style="color:#0f172a;">Administradores</h1>
+      <p class="text-sm mt-0.5" style="color:#64748b;">Gestiona los administradores del sistema</p>
+    </div>
+    <a href="/superadmin/admins/crear/"
+       class="px-4 py-2 rounded-lg text-sm font-semibold text-white"
+       style="background:#7c3aed;"
+       onmouseover="this.style.background='#6d28d9'" onmouseout="this.style.background='#7c3aed'">
+      + Nuevo Admin
+    </a>
+  </div>
+
+  <div class="bg-white rounded-xl overflow-hidden" style="border:1px solid #e2e8f0;">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr style="border-bottom:1px solid #e2e8f0;background:#f8fafc;">
+            <th class="text-left px-4 py-3 text-xs font-semibold uppercase" style="color:#64748b;">Admin</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold uppercase" style="color:#64748b;">Correo</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold uppercase" style="color:#64748b;">Plataformas</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold uppercase" style="color:#64748b;">Reportes/mes</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold uppercase" style="color:#64748b;">Estado</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold uppercase" style="color:#64748b;">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in admins %}
+            {% with reportes_mes=0 %}
+            {% include 'partials/fila_admin_sa.html' %}
+            {% endwith %}
+          {% empty %}
+          <tr><td colspan="6" class="px-4 py-8 text-center text-sm" style="color:#94a3b8;">Sin administradores registrados</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

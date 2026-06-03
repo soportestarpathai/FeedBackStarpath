@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block title %}Config Global — FeedbackEve{% endblock %}
+{% block nav_sa_config %}active{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-6 py-6">
+  <div class="mb-6">
+    <h1 class="text-xl font-bold" style="color:#0f172a;">Configuración Global</h1>
+    <p class="text-sm mt-0.5" style="color:#64748b;">Parámetros del sistema FeedbackEve</p>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-5 mb-6">
+    <div class="bg-white rounded-xl p-5" style="border:1px solid #e2e8f0;">
+      <h3 class="font-semibold text-sm mb-4" style="color:#0f172a;">Sistema</h3>
+      <div class="flex flex-col gap-3">
+        <div>
+          <label class="block text-xs font-medium mb-1.5" style="color:#374151;">Nombre del sistema</label>
+          <input type="text" value="FeedbackEve" class="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
+                 style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#0f172a;">
+        </div>
+        <div>
+          <label class="block text-xs font-medium mb-1.5" style="color:#374151;">Versión</label>
+          <input type="text" value="2.0.0" disabled class="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
+                 style="border:1.5px solid #e2e8f0;background:#f1f5f9;color:#94a3b8;">
+        </div>
+        <div>
+          <label class="block text-xs font-medium mb-1.5" style="color:#374151;">Idioma</label>
+          <select class="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
+                  style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;">
+            <option selected>Español (México)</option>
+            <option>English</option>
+          </select>
+        </div>
+        <div class="flex items-center justify-between py-2" style="border-top:1px solid #f1f5f9;">
+          <div>
+            <div class="text-sm font-medium" style="color:#0f172a;">Modo mantenimiento</div>
+            <div class="text-xs mt-0.5" style="color:#94a3b8;">Bloquea acceso a usuarios</div>
+          </div>
+          <label class="flex items-center cursor-pointer">
+            <div class="relative">
+              <input type="checkbox" class="sr-only">
+              <div class="w-10 h-5 rounded-full" style="background:#e2e8f0;"></div>
+              <div class="absolute left-0.5 top-0.5 w-4 h-4 rounded-full bg-white transition" style="box-shadow:0 1px 3px rgba(0,0,0,.2);"></div>
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl p-5" style="border:1px solid #e2e8f0;">
+      <h3 class="font-semibold text-sm mb-4" style="color:#0f172a;">Seguridad</h3>
+      <div class="flex flex-col gap-3">
+        <div>
+          <label class="block text-xs font-medium mb-1.5" style="color:#374151;">Intentos máx. de login</label>
+          <input type="number" value="5" class="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
+                 style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#0f172a;">
+        </div>
+        <div>
+          <label class="block text-xs font-medium mb-1.5" style="color:#374151;">Tiempo de sesión (min)</label>
+          <input type="number" value="120" class="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
+                 style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#0f172a;">
+        </div>
+        <div class="flex items-center justify-between py-2" style="border-top:1px solid #f1f5f9;">
+          <div>
+            <div class="text-sm font-medium" style="color:#0f172a;">Autenticación 2FA</div>
+            <div class="text-xs mt-0.5" style="color:#94a3b8;">Requiere código adicional</div>
+          </div>
+          <span class="text-xs px-2 py-0.5 rounded-full" style="background:#fef9c3;color:#ca8a04;">Próximamente</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="px-5 py-4 rounded-xl" style="border:2px solid #fecaca;background:#fff5f5;">
+    <h3 class="font-semibold text-sm mb-3" style="color:#dc2626;">Zona de peligro</h3>
+    <div class="flex flex-wrap gap-3">
+      <button type="button" onclick="alert('Función no disponible en modo demo')"
+              class="px-4 py-2 rounded-lg text-xs font-semibold"
+              style="background:#fee2e2;color:#dc2626;border:1px solid #fecaca;cursor:pointer;">
+        Limpiar reportes cerrados
+      </button>
+      <button type="button" onclick="alert('Función no disponible en modo demo')"
+              class="px-4 py-2 rounded-lg text-xs font-semibold"
+              style="background:#fee2e2;color:#dc2626;border:1px solid #fecaca;cursor:pointer;">
+        Resetear estadísticas
+      </button>
+      <button type="button" onclick="alert('Función no disponible en modo demo')"
+              class="px-4 py-2 rounded-lg text-xs font-semibold"
+              style="background:#fee2e2;color:#dc2626;border:1px solid #fecaca;cursor:pointer;">
+        Exportar backup completo
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock %}

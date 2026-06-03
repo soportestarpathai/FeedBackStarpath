@@ -1,34 +1,88 @@
-{% extends 'base.html' %}
-{% block content %}
-<div class="min-h-screen flex items-center justify-center bg-[#0a1628]">
-  <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
-    <div class="text-center mb-8">
-      <h1 class="text-2xl font-bold text-[#0a1628]">Feedback<span class="text-sky-500">Eve</span></h1>
-      <p class="text-slate-500 text-sm mt-1">Portal de Calidad e Incidencias</p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar sesión — FeedbackEve</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex h-screen overflow-hidden">
+
+  <!-- Izquierda 40% -->
+  <div class="hidden md:flex flex-col justify-center items-center px-12" style="width:40%;background:#0d1b2a;flex-shrink:0;">
+    <div class="text-center">
+      <div class="flex justify-center items-center gap-1 mb-6">
+        <span class="text-white font-bold text-4xl">Feedback</span><span style="color:#60a5fa" class="font-bold text-4xl">Eve</span>
+      </div>
+      <p class="text-lg font-semibold mb-2" style="color:#e2e8f0">Sistema de gestión de incidencias</p>
+      <p class="text-sm leading-relaxed" style="color:#64748b">Centraliza bugs, sugerencias y quejas del ecosistema EVE 360. Asigna, da seguimiento y resuelve más rápido.</p>
+      <div class="mt-10 flex flex-col gap-4 text-left">
+        <div class="flex items-start gap-3 text-sm" style="color:#475569;">
+          <span class="w-1 h-1 rounded-full mt-2 flex-shrink-0" style="background:#60a5fa;"></span>
+          <span>Reportes de bugs con evidencia técnica y trazabilidad completa</span>
+        </div>
+        <div class="flex items-start gap-3 text-sm" style="color:#475569;">
+          <span class="w-1 h-1 rounded-full mt-2 flex-shrink-0" style="background:#60a5fa;"></span>
+          <span>Dashboard diferenciado por rol con métricas en tiempo real</span>
+        </div>
+        <div class="flex items-start gap-3 text-sm" style="color:#475569;">
+          <span class="w-1 h-1 rounded-full mt-2 flex-shrink-0" style="background:#60a5fa;"></span>
+          <span>Exportación PDF con historial de estados y análisis completo</span>
+        </div>
+      </div>
     </div>
-    {% if error %}
-      <p class="bg-red-50 text-red-600 text-sm p-3 rounded-lg mb-4 border border-red-200">{{ error }}</p>
-    {% endif %}
-    <form method="post">
-      {% csrf_token %}
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-slate-700 mb-1">Correo electrónico</label>
-        <input name="email" type="email" required
-          class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400">
-      </div>
-      <div class="mb-6">
-        <label class="block text-sm font-medium text-slate-700 mb-1">Contraseña</label>
-        <input name="password" type="password" required
-          class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400">
-      </div>
-      <button type="submit"
-        class="w-full bg-[#0a1628] text-white font-semibold py-2.5 rounded-lg hover:bg-[#162d5a] transition">
-        Iniciar sesión
-      </button>
-    </form>
-    <p class="text-center text-sm text-slate-500 mt-4">
-      ¿No tienes cuenta? <a href="{% url 'register' %}" class="text-sky-500 hover:underline">Regístrate</a>
-    </p>
   </div>
-</div>
-{% endblock %}
+
+  <!-- Derecha 60% -->
+  <div class="flex-1 flex flex-col justify-center items-center px-8 py-12 bg-white overflow-y-auto">
+    <div class="w-full max-w-sm">
+      <div class="flex justify-center items-center gap-1 mb-8 md:hidden">
+        <span class="font-bold text-2xl" style="color:#0d1b2a">Feedback</span><span style="color:#2563eb" class="font-bold text-2xl">Eve</span>
+      </div>
+
+      <h1 class="text-2xl font-bold mb-1" style="color:#0f172a">Bienvenido de vuelta</h1>
+      <p class="text-sm mb-8" style="color:#64748b">Ingresa con tu cuenta para continuar</p>
+
+      {% if error %}
+      <div class="mb-4 px-4 py-3 rounded-lg text-sm" style="background:#fef2f2;border:1px solid #fecaca;color:#dc2626;">
+        {{ error }}
+      </div>
+      {% endif %}
+
+      <form method="post" class="flex flex-col gap-4">
+        {% csrf_token %}
+        <div>
+          <label class="block text-sm font-medium mb-1.5" style="color:#374151">Correo electrónico</label>
+          <input type="email" name="email" autocomplete="email" required
+                 value="{{ form.email.value|default:'' }}" placeholder="tu@empresa.com"
+                 class="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
+                 style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#0f172a;"
+                 onfocus="this.style.borderColor='#2563eb';this.style.background='#fff'"
+                 onblur="this.style.borderColor='#e2e8f0';this.style.background='#f8fafc'">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1.5" style="color:#374151">Contraseña</label>
+          <input type="password" name="password" autocomplete="current-password" required
+                 placeholder="••••••••"
+                 class="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
+                 style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#0f172a;"
+                 onfocus="this.style.borderColor='#2563eb';this.style.background='#fff'"
+                 onblur="this.style.borderColor='#e2e8f0';this.style.background='#f8fafc'">
+        </div>
+        <button type="submit"
+                class="w-full py-2.5 rounded-lg text-sm font-semibold text-white mt-1"
+                style="background:#2563eb;"
+                onmouseover="this.style.background='#1d4ed8'"
+                onmouseout="this.style.background='#2563eb'">
+          Iniciar sesión
+        </button>
+      </form>
+
+      <p class="text-center text-sm mt-6" style="color:#64748b">
+        ¿No tienes cuenta? <a href="/registro/" class="font-semibold" style="color:#2563eb">Regístrate aquí</a>
+      </p>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% load report_tags %}
+{% block title %}Dashboard — FeedbackEve{% endblock %}
+{% block nav_sa_dash %}active{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-6 py-6">
+
+  <div class="mb-5">
+    <h1 class="text-xl font-bold" style="color:#0f172a;">Dashboard Global</h1>
+    <p class="text-sm mt-0.5" style="color:#64748b;">Vista completa del ecosistema EVE 360</p>
+  </div>
+
+  <div class="mb-4 px-4 py-2.5 rounded-lg text-sm flex items-center gap-2"
+       style="background:#f5f3ff;border:1px solid #ddd6fe;color:#6d28d9;">
+    🔐 Tienes acceso total al sistema. Actúa con responsabilidad.
+  </div>
+
+  <!-- Stats globales -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+    <div class="bg-white rounded-xl p-4" style="border:1px solid #e2e8f0;">
+      <div class="text-xs font-medium mb-1" style="color:#64748b;">Plataformas</div>
+      <div class="text-3xl font-bold" style="color:#7c3aed;">{{ plataformas|length }}</div>
+    </div>
+    <div class="bg-white rounded-xl p-4" style="border:1px solid #e2e8f0;">
+      <div class="text-xs font-medium mb-1" style="color:#64748b;">Críticos globales</div>
+      <div class="text-3xl font-bold" style="color:#dc2626;">{{ resumen.criticos }}</div>
+    </div>
+    <div class="bg-white rounded-xl p-4" style="border:1px solid #e2e8f0;">
+      <div class="text-xs font-medium mb-1" style="color:#64748b;">Administradores</div>
+      <div class="text-3xl font-bold" style="color:#2563eb;">{{ admins|length }}</div>
+    </div>
+    <div class="bg-white rounded-xl p-4" style="border:1px solid #e2e8f0;">
+      <div class="text-xs font-medium mb-1" style="color:#64748b;">Tasa de resolución</div>
+      <div class="text-3xl font-bold" style="color:#059669;">{{ resumen.tasa_fix }}%</div>
+    </div>
+  </div>
+
+  <div class="grid gap-5" style="grid-template-columns:1.5fr 1fr;">
+
+    <!-- Actividad por plataforma -->
+    <div class="bg-white rounded-xl overflow-hidden" style="border:1px solid #e2e8f0;">
+      <div class="px-5 py-4 flex items-center justify-between" style="border-bottom:1px solid #e2e8f0;">
+        <h3 class="font-semibold text-sm" style="color:#0f172a;">Actividad por plataforma</h3>
+        <a href="/superadmin/plataformas/" class="text-xs" style="color:#7c3aed;">Gestionar →</a>
+      </div>
+      <table class="w-full text-sm">
+        <thead>
+          <tr style="background:#f8fafc;border-bottom:1px solid #e2e8f0;">
+            <th class="text-left px-4 py-2.5 text-xs font-semibold uppercase" style="color:#64748b;">Plataforma</th>
+            <th class="text-left px-4 py-2.5 text-xs font-semibold uppercase" style="color:#64748b;">Admins</th>
+            <th class="text-left px-4 py-2.5 text-xs font-semibold uppercase" style="color:#64748b;">Abiertos</th>
+            <th class="text-left px-4 py-2.5 text-xs font-semibold uppercase" style="color:#64748b;">Resueltos</th>
+            <th class="text-left px-4 py-2.5 text-xs font-semibold uppercase" style="color:#64748b;">Último</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in actividad %}
+          <tr style="border-bottom:1px solid #f1f5f9;" class="hover:bg-slate-50">
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full flex-shrink-0" style="background:{{ item.plataforma.color }};"></span>
+                <span class="font-medium text-sm" style="color:#0f172a;">{{ item.plataforma.nombre }}</span>
+                {% if not item.plataforma.activa %}<span class="text-xs px-1.5 py-0.5 rounded" style="background:#f1f5f9;color:#94a3b8;">Inactiva</span>{% endif %}
+              </div>
+            </td>
+            <td class="px-4 py-3 text-sm" style="color:#374151;">{{ item.admins|length }}</td>
+            <td class="px-4 py-3"><span class="text-sm font-semibold" style="color:#d97706;">{{ item.abiertos }}</span></td>
+            <td class="px-4 py-3"><span class="text-sm font-semibold" style="color:#059669;">{{ item.resueltos }}</span></td>
+            <td class="px-4 py-3 text-xs" style="color:#94a3b8;">
+              {% if item.ultimo %}{{ item.ultimo.creado_en|date:"d M" }}{% else %}—{% endif %}
+            </td>
+            <td class="px-4 py-3">
+              <a href="/superadmin/reportes/?plataforma={{ item.plataforma.pk }}"
+                 class="text-xs px-2.5 py-1.5 rounded-md"
+                 style="border:1px solid #e2e8f0;color:#374151;">Ver →</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6" class="px-4 py-6 text-center text-sm" style="color:#94a3b8;">Sin plataformas</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Columna derecha -->
+    <div class="flex flex-col gap-4">
+
+      <!-- Lista admins -->
+      <div class="bg-white rounded-xl p-5" style="border:1px solid #e2e8f0;">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-semibold text-sm" style="color:#0f172a;">Administradores</h3>
+          <a href="/superadmin/admins/" class="text-xs" style="color:#7c3aed;">Ver todos →</a>
+        </div>
+        <div class="flex flex-col gap-2">
+          {% for a in admins|slice:":6" %}
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0" style="background:#2563eb;">
+                {% if a.first_name %}{{ a.first_name.0|upper }}{% else %}{{ a.email.0|upper }}{% endif %}
+              </div>
+              <div>
+                <div class="text-xs font-medium" style="color:#0f172a;">{{ a.get_full_name|default:a.email|truncatechars:20 }}</div>
+                <div class="text-xs" style="color:#94a3b8;">
+                  {% for p in a.plataformas_asignadas.all|slice:":2" %}{{ p.nombre }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center gap-1">
+              <span class="w-2 h-2 rounded-full" style="background:{% if a.is_active %}#059669{% else %}#94a3b8{% endif %};"></span>
+              <span class="text-xs" style="color:#94a3b8;">{% if a.is_active %}Activo{% else %}Inactivo{% endif %}</span>
+            </div>
+          </div>
+          {% empty %}
+          <p class="text-xs text-center py-2" style="color:#94a3b8;">Sin admins registrados</p>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Resumen global -->
+      <div class="bg-white rounded-xl p-5" style="border:1px solid #e2e8f0;">
+        <h3 class="font-semibold text-sm mb-3" style="color:#0f172a;">Resumen global</h3>
+        <div class="flex flex-col divide-y" style="divide-color:#f1f5f9;">
+          <div class="flex justify-between py-2 text-sm">
+            <span style="color:#64748b;">Usuarios totales</span><strong style="color:#0f172a;">{{ resumen.usuarios }}</strong>
+          </div>
+          <div class="flex justify-between py-2 text-sm">
+            <span style="color:#64748b;">Reportes este mes</span><strong style="color:#0f172a;">{{ resumen.reportes_mes }}</strong>
+          </div>
+          <div class="flex justify-between py-2 text-sm">
+            <span style="color:#64748b;">Tiempo promedio fix</span>
+            <strong style="color:#0f172a;">{% if resumen.avg_horas %}{{ resumen.avg_horas }}h{% else %}—{% endif %}</strong>
+          </div>
+          <div class="flex justify-between py-2 text-sm">
+            <span style="color:#64748b;">Plataformas sin admin</span>
+            <strong style="color:{% if resumen.sin_admin > 0 %}#dc2626{% else %}#059669{% endif %};">{{ resumen.sin_admin }}</strong>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

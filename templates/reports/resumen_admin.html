@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load report_tags %}
+{% block title %}Resumen — FeedbackEve{% endblock %}
+{% block nav_ad_res %}active{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-6 py-6">
+
+  <div class="mb-5">
+    <h1 class="text-xl font-bold" style="color:#0f172a;">Resumen</h1>
+    {% if plataforma %}
+    <p class="text-sm mt-0.5" style="color:#64748b;">Plataforma: {{ plataforma.nombre }}</p>
+    {% endif %}
+  </div>
+
+  {% if plataforma %}
+  <div class="mb-4 px-4 py-2.5 rounded-lg text-sm flex items-center gap-2"
+       style="background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;">
+    Gestionando: <strong>{{ plataforma.nombre }}</strong>
+    {% if not plataforma.activa %}<span class="ml-2 text-xs px-2 py-0.5 rounded-full" style="background:#fee2e2;color:#dc2626;">Inactiva</span>{% endif %}
+  </div>
+  {% endif %}
+
+  <!-- Stats -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+    <div class="bg-white rounded-xl p-4" style="border:1px solid #e2e8f0;">
+      <div class="text-xs font-medium mb-1" style="color:#64748b;">Total reportes</div>
+      <div class="text-3xl font-bold" style="color:#2563eb;">{{ stats.total }}</div>
+    </div>
+    <div class="bg-white rounded-xl p-4" style="border:1px solid #e2e8f0;">
+      <div class="text-xs font-medium mb-1" style="color:#64748b;">Abiertos</div>
+      <div class="text-3xl font-bold" style="color:#d97706;">{{ stats.abiertos }}</div>
+    </div>
+    <div class="bg-white rounded-xl p-4" style="border:1px solid #e2e8f0;">
+      <div class="text-xs font-medium mb-1" style="color:#64748b;">Críticos activos</div>
+      <div class="text-3xl font-bold" style="color:#dc2626;">{{ stats.criticos }}</div>
+    </div>
+    <div class="bg-white rounded-xl p-4" style="border:1px solid #e2e8f0;">
+      <div class="text-xs font-medium mb-1" style="color:#64748b;">Resueltos</div>
+      <div class="text-3xl font-bold" style="color:#059669;">{{ stats.resueltos }}</div>
+    </div>
+  </div>
+
+  <div class="grid gap-5" style="grid-template-columns:1.2fr 1fr;">
+
+    <!-- Izquierda: críticos recientes -->
+    <div class="bg-white rounded-xl p-5" style="border:1px solid #e2e8f0;">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-semibold text-sm" style="color:#0f172a;">Reportes críticos recientes</h3>
+        <a href="/admin/reportes/?severidad=CRITICA" class="text-xs" style="color:#2563eb;">Ver todos →</a>
+      </div>
+      {% if reportes_criticos %}
+      <div class="flex flex-col gap-3">
+        {% for r in reportes_criticos %}
+        <a href="/admin/reportes/{{ r.pk }}/"
+           class="block p-3 rounded-lg hover:bg-gray-50 transition"
+           style="border-left:3px solid #dc2626;padding-left:12px;background:#fafafa;">
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <div class="text-sm font-medium" style="color:#0f172a;">{{ r.titulo }}</div>
+              <div class="text-xs mt-0.5" style="color:#94a3b8;">#{{ r.pk }} · {{ r.creado_en|date:"d M Y" }}</div>
+            </div>
+            <div class="flex flex-col items-end gap-1 flex-shrink-0">
+              {% badge_tipo r.tipo %}
+              {% if not r.asignado_a %}
+              <span class="text-xs font-medium" style="color:#dc2626;">Sin asignar ⚠</span>
+              {% endif %}
+            </div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="py-6 text-center">
+        <p class="text-sm" style="color:#94a3b8;">Sin reportes críticos activos</p>
+        <p class="text-xs mt-1" style="color:#cbd5e1;">¡Todo en orden!</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Derecha -->
+    <div class="flex flex-col gap-4">
+
+      <!-- Info plataforma -->
+      {% if plataforma %}
+      <div class="bg-white rounded-xl p-5" style="border:1px solid #e2e8f0;">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-semibold text-sm" style="color:#0f172a;">Tu plataforma</h3>
+          {% if plataforma.activa %}
+          <span class="text-xs font-medium px-2 py-0.5 rounded-full" style="background:#d1fae5;color:#065f46;">Activa</span>
+          {% else %}
+          <span class="text-xs font-medium px-2 py-0.5 rounded-full" style="background:#fee2e2;color:#dc2626;">Inactiva</span>
+          {% endif %}
+        </div>
+        <div class="flex items-center gap-2 mb-3">
+          <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:{{ plataforma.color }};"></span>
+          <span class="font-semibold" style="color:#0f172a;">{{ plataforma.nombre }}</span>
+        </div>
+        <div class="flex flex-col divide-y" style="divide-color:#f1f5f9;">
+          <div class="flex justify-between py-2 text-sm">
+            <span style="color:#64748b;">Testers</span><strong style="color:#0f172a;">{{ info.testers }}</strong>
+          </div>
+          <div class="flex justify-between py-2 text-sm">
+            <span style="color:#64748b;">Usuarios</span><strong style="color:#0f172a;">{{ info.usuarios }}</strong>
+          </div>
+          <div class="flex justify-between py-2 text-sm">
+            <span style="color:#64748b;">Total reportes</span><strong style="color:#0f172a;">{{ info.total_reportes }}</strong>
+          </div>
+          <div class="flex justify-between py-2 text-sm">
+            <span style="color:#64748b;">Críticos sin asignar</span>
+            <strong style="color:{% if info.criticos_sin > 0 %}#dc2626{% else %}#059669{% endif %};">
+              {{ info.criticos_sin }}
+            </strong>
+          </div>
+        </div>
+        {% if info.criticos_sin > 0 %}
+        <div class="mt-3 px-3 py-2 rounded-lg text-xs flex items-center gap-2"
+             style="background:#fef2f2;border:1px solid #fecaca;color:#dc2626;">
+          ⚠ Hay {{ info.criticos_sin }} reporte{{ info.criticos_sin|pluralize }} crítico{{ info.criticos_sin|pluralize }} sin asignar
+        </div>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      <!-- Actividad reciente -->
+      <div class="bg-white rounded-xl p-5" style="border:1px solid #e2e8f0;">
+        <h3 class="font-semibold text-sm mb-4" style="color:#0f172a;">Actividad reciente</h3>
+        {% if actividad_reciente %}
+        <div class="flex flex-col gap-3">
+          {% for h in actividad_reciente %}
+          <div class="flex items-start gap-3">
+            <span class="text-base flex-shrink-0 mt-0.5">
+              {% if h.estado_nuevo == 'RESUELTO' %}✅{% elif h.estado_nuevo == 'EN_REVISION' %}🔄{% elif h.estado_nuevo == 'CERRADO' %}🔒{% else %}📋{% endif %}
+            </span>
+            <div class="min-w-0">
+              <p class="text-sm truncate" style="color:#0f172a;">
+                <strong>{{ h.estado_nuevo }}</strong> · {{ h.reporte.titulo|truncatechars:40 }}
+              </p>
+              <p class="text-xs mt-0.5" style="color:#94a3b8;">
+                {{ h.fecha|date:"d M, H:i" }}{% if h.cambiado_por %} · {{ h.cambiado_por.email }}{% endif %}
+              </p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-sm text-center py-4" style="color:#94a3b8;">Sin actividad reciente</p>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

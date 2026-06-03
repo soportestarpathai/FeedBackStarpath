@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load report_tags %}
+{% block title %}Reportes — FeedbackEve{% endblock %}
+{% block nav_ad_rep %}active{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-6 py-6">
+
+  <div class="flex items-center justify-between mb-5">
+    <div>
+      <h1 class="text-xl font-bold" style="color:#0f172a;">Reportes</h1>
+      <p class="text-sm mt-0.5" style="color:#64748b;">Todos los reportes de tu plataforma</p>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">
+    <div class="bg-white rounded-xl p-4" style="border:1px solid #e2e8f0;">
+      <div class="text-xs font-medium mb-1" style="color:#64748b;">Total</div>
+      <div class="text-3xl font-bold" style="color:#2563eb;">{{ stats.total }}</div>
+    </div>
+    <div class="bg-white rounded-xl p-4" style="border:1px solid #e2e8f0;">
+      <div class="text-xs font-medium mb-1" style="color:#64748b;">Abiertos</div>
+      <div class="text-3xl font-bold" style="color:#d97706;">{{ stats.abiertos }}</div>
+    </div>
+    <div class="bg-white rounded-xl p-4" style="border:1px solid #e2e8f0;">
+      <div class="text-xs font-medium mb-1" style="color:#64748b;">Críticos</div>
+      <div class="text-3xl font-bold" style="color:#dc2626;">{{ stats.criticos }}</div>
+    </div>
+    <div class="bg-white rounded-xl p-4" style="border:1px solid #e2e8f0;">
+      <div class="text-xs font-medium mb-1" style="color:#64748b;">Resueltos</div>
+      <div class="text-3xl font-bold" style="color:#059669;">{{ stats.resueltos }}</div>
+    </div>
+  </div>
+
+  <!-- Filtros HTMX -->
+  <div class="bg-white rounded-xl p-4 mb-4 flex flex-wrap gap-3 items-center" style="border:1px solid #e2e8f0;"
+       id="admin-filtros"
+       hx-get="/admin/reportes/tabla/"
+       hx-trigger="input delay:400ms, change"
+       hx-target="#tabla-reportes"
+       hx-include="#admin-filtros">
+
+    <div class="flex items-center gap-2 flex-1 min-w-48" style="border:1.5px solid #e2e8f0;border-radius:8px;padding:0 10px;background:#f8fafc;">
+      <svg width="14" height="14" fill="none" stroke="#94a3b8" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" name="q" placeholder="Buscar reporte..." value="{{ request.GET.q }}"
+             class="flex-1 py-2 text-sm outline-none bg-transparent" style="color:#0f172a;">
+    </div>
+
+    <select name="tipo" class="px-3 py-2 rounded-lg text-sm outline-none" style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;">
+      <option value="">Tipo</option>
+      {% for val, label in tipo_choices %}
+        <option value="{{ val }}" {% if request.GET.tipo == val %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+
+    <select name="estado" class="px-3 py-2 rounded-lg text-sm outline-none" style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;">
+      <option value="">Estado</option>
+      {% for val, label in estado_choices %}
+        <option value="{{ val }}" {% if request.GET.estado == val %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+
+    <select name="severidad" class="px-3 py-2 rounded-lg text-sm outline-none" style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;">
+      <option value="">Severidad</option>
+      {% for val, label in sev_choices %}
+        <option value="{{ val }}" {% if request.GET.severidad == val %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+
+    <select name="asignado" class="px-3 py-2 rounded-lg text-sm outline-none" style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;">
+      <option value="">Asignación</option>
+      <option value="con" {% if request.GET.asignado == 'con' %}selected{% endif %}>Asignados</option>
+      <option value="sin" {% if request.GET.asignado == 'sin' %}selected{% endif %}>Sin asignar</option>
+    </select>
+  </div>
+
+  <!-- Tabla -->
+  <div class="bg-white rounded-xl overflow-hidden" style="border:1px solid #e2e8f0;">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <colgroup>
+          <col style="width:70px"><col><col style="width:90px"><col style="width:90px">
+          <col style="width:150px"><col style="width:140px"><col style="width:70px">
+        </colgroup>
+        <thead>
+          <tr style="border-bottom:1px solid #e2e8f0;background:#f8fafc;">
+            <th class="text-left px-4 py-3 text-xs font-semibold uppercase" style="color:#64748b;">ID</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold uppercase" style="color:#64748b;">Título / Email</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold uppercase" style="color:#64748b;">Tipo</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold uppercase" style="color:#64748b;">Severidad</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold uppercase" style="color:#64748b;">Estado</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold uppercase" style="color:#64748b;">Asignado a</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tabla-reportes">
+          {% include 'partials/tabla_admin.html' %}
+        </tbody>
+      </table>
+    </div>
+    <div class="px-4 py-3" style="border-top:1px solid #e2e8f0;">
+      <span class="text-xs" style="color:#94a3b8;">{{ reportes|length }} reportes</span>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% block title %}Exportar PDF — FeedbackEve{% endblock %}
+{% block nav_ad_pdf %}active{% endblock %}
+{% block nav_sa_dash %}{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-6 py-6">
+  <div class="mb-5">
+    <h1 class="text-xl font-bold" style="color:#0f172a;">Exportar PDF</h1>
+    <p class="text-sm mt-0.5" style="color:#64748b;">Genera reportes en PDF con los filtros que necesites</p>
+  </div>
+
+  <div class="grid gap-5" style="grid-template-columns:1fr 1.2fr;">
+
+    <!-- Filtros -->
+    <form method="post">
+      {% csrf_token %}
+      <div class="bg-white rounded-xl p-5" style="border:1px solid #e2e8f0;">
+        <h3 class="font-semibold text-sm mb-4" style="color:#0f172a;">Configurar exportación</h3>
+        <div class="flex flex-col gap-3">
+
+          {% if is_sa %}
+          <div>
+            <label class="block text-xs font-medium mb-1.5" style="color:#374151;">Plataforma</label>
+            <select name="plataforma" class="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
+                    style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;">
+              <option value="">Todas las plataformas</option>
+              {% for p in plataformas %}<option value="{{ p.pk }}">{{ p.nombre }}</option>{% endfor %}
+            </select>
+          </div>
+          {% else %}
+          <div>
+            <label class="block text-xs font-medium mb-1.5" style="color:#374151;">Plataforma</label>
+            <select name="plataforma" class="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
+                    style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;">
+              <option value="">Todas mis plataformas</option>
+              {% for p in plataformas %}<option value="{{ p.pk }}">{{ p.nombre }}</option>{% endfor %}
+            </select>
+          </div>
+          {% endif %}
+
+          <div>
+            <label class="block text-xs font-medium mb-1.5" style="color:#374151;">Estado</label>
+            <select name="estado" class="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
+                    style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;">
+              <option value="">Todos</option>
+              {% for val, label in estado_choices %}<option value="{{ val }}">{{ label }}</option>{% endfor %}
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium mb-1.5" style="color:#374151;">Tipo</label>
+            <select name="tipo" class="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
+                    style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;">
+              <option value="">Todos</option>
+              {% for val, label in tipo_choices %}<option value="{{ val }}">{{ label }}</option>{% endfor %}
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium mb-1.5" style="color:#374151;">Severidad</label>
+            <select name="severidad" class="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
+                    style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;">
+              <option value="">Toda</option>
+              {% for val, label in sev_choices %}<option value="{{ val }}">{{ label }}</option>{% endfor %}
+            </select>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-medium mb-1.5" style="color:#374151;">Desde</label>
+              <input type="date" name="desde" class="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
+                     style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;">
+            </div>
+            <div>
+              <label class="block text-xs font-medium mb-1.5" style="color:#374151;">Hasta</label>
+              <input type="date" name="hasta" class="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
+                     style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium mb-2" style="color:#374151;">Incluir secciones</label>
+            <div class="flex flex-col gap-2">
+              <label class="flex items-center gap-2 text-sm cursor-pointer" style="color:#374151;">
+                <input type="checkbox" name="inc_resumen" value="1" checked> Resumen estadístico
+              </label>
+              <label class="flex items-center gap-2 text-sm cursor-pointer" style="color:#374151;">
+                <input type="checkbox" name="inc_tabla" value="1" checked> Tabla de reportes
+              </label>
+              <label class="flex items-center gap-2 text-sm cursor-pointer" style="color:#374151;">
+                <input type="checkbox" name="inc_tecnico" value="1"> Detalle técnico
+              </label>
+              <label class="flex items-center gap-2 text-sm cursor-pointer" style="color:#374151;">
+                <input type="checkbox" name="inc_historial" value="1" checked> Historial de estados
+              </label>
+            </div>
+          </div>
+
+          <button type="submit"
+                  class="w-full py-3 rounded-lg text-sm font-semibold text-white mt-2"
+                  style="background:#2563eb;"
+                  onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'">
+            Generar PDF
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <!-- Vista previa -->
+    <div class="bg-white rounded-xl p-5" style="border:1px solid #e2e8f0;">
+      <h3 class="font-semibold text-sm mb-4" style="color:#0f172a;">Vista previa del documento</h3>
+      <div class="rounded-xl p-4" style="background:#f8fafc;border:1px solid #e2e8f0;">
+        <div class="flex items-center justify-between mb-1">
+          <div>
+            <div class="font-bold text-sm" style="color:#0f172a;">FeedbackEve — Reporte de Incidencias</div>
+            <div class="text-xs mt-0.5" style="color:#64748b;">EVE 360 · Sistema de gestión</div>
+          </div>
+          <div class="text-xs" style="color:#94a3b8;">PDF</div>
+        </div>
+        <div style="border-top:2px solid #2563eb;margin:10px 0 8px;"></div>
+        <div class="grid grid-cols-4 gap-2 mb-4">
+          {% for label, color in header_stats|default:"" %}{% endfor %}
+          <div class="text-center p-2 rounded" style="background:#eff6ff;">
+            <div class="text-lg font-bold" style="color:#2563eb;">—</div>
+            <div class="text-xs" style="color:#64748b;">Total</div>
+          </div>
+          <div class="text-center p-2 rounded" style="background:#fef2f2;">
+            <div class="text-lg font-bold" style="color:#dc2626;">—</div>
+            <div class="text-xs" style="color:#64748b;">Bugs</div>
+          </div>
+          <div class="text-center p-2 rounded" style="background:#f0fdf4;">
+            <div class="text-lg font-bold" style="color:#059669;">—</div>
+            <div class="text-xs" style="color:#64748b;">Resueltos</div>
+          </div>
+          <div class="text-center p-2 rounded" style="background:#fefce8;">
+            <div class="text-lg font-bold" style="color:#ca8a04;">—</div>
+            <div class="text-xs" style="color:#64748b;">Críticos</div>
+          </div>
+        </div>
+        <div style="border-top:1px solid #e2e8f0;padding-top:8px;">
+          {% for i in "123" %}
+          <div class="flex justify-between py-1.5" style="border-bottom:1px solid #f1f5f9;font-size:11px;color:#374151;">
+            <span>Reporte de ejemplo {{ forloop.counter }}</span>
+            <span class="px-1.5 py-0.5 rounded text-xs" style="background:#fee2e2;color:#dc2626;">Bug</span>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="text-center mt-3 text-xs" style="color:#94a3b8;">
+          Confidencial · FeedbackEve © 2024
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

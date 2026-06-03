@@ -1,0 +1,17 @@
+{% load report_tags %}
+{% for r in reportes %}
+<tr style="border-bottom:1px solid #f1f5f9;" class="hover:bg-slate-50">
+  <td class="px-4 py-3 text-xs" style="color:#94a3b8;">#{{ r.pk }}</td>
+  <td class="px-4 py-3"><div class="font-medium text-sm" style="color:#0f172a;">{{ r.titulo }}</div></td>
+  <td class="px-4 py-3">{% badge_tipo r.tipo %}</td>
+  <td class="px-4 py-3">
+    <div class="flex items-center gap-1.5">{% dot_estado r.estado %}<span class="text-xs" style="color:#374151;">{% label_estado r.estado %}</span></div>
+  </td>
+  <td class="px-4 py-3 text-xs" style="color:#94a3b8;">{{ r.creado_en|date:"d M Y" }}</td>
+  <td class="px-4 py-3">
+    <a href="/reportes/{{ r.pk }}/" class="text-xs px-3 py-1.5 rounded-md" style="border:1px solid #e2e8f0;color:#374151;">Ver →</a>
+  </td>
+</tr>
+{% empty %}
+<tr><td colspan="6" class="px-4 py-8 text-center text-sm" style="color:#94a3b8;">No se encontraron reportes</td></tr>
+{% endfor %}

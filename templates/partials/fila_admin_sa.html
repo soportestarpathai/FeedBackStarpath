@@ -1,0 +1,49 @@
+<tr id="fila-admin-sa-{{ a.pk }}" style="border-bottom:1px solid #f1f5f9;" class="hover:bg-slate-50">
+  <td class="px-4 py-3">
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0" style="background:#2563eb;">
+        {% if a.first_name %}{{ a.first_name.0|upper }}{% if a.last_name %}{{ a.last_name.0|upper }}{% endif %}{% else %}{{ a.email.0|upper }}{% endif %}
+      </div>
+      <div>
+        <div class="text-sm font-medium" style="color:#0f172a;">{{ a.get_full_name|default:"—" }}</div>
+      </div>
+    </div>
+  </td>
+  <td class="px-4 py-3 text-xs" style="color:#64748b;">{{ a.email }}</td>
+  <td class="px-4 py-3">
+    <div class="flex flex-wrap gap-1">
+      {% for p in a.plataformas_asignadas.all %}
+        <span class="text-xs px-1.5 py-0.5 rounded-full font-medium" style="background:#eff6ff;color:#2563eb;">{{ p.nombre }}</span>
+      {% empty %}
+        <span class="text-xs" style="color:#94a3b8;">Sin plataforma</span>
+      {% endfor %}
+    </div>
+  </td>
+  <td class="px-4 py-3 text-sm" style="color:#374151;">{{ reportes_mes }}</td>
+  <td class="px-4 py-3">
+    {% if a.is_active %}
+      <div class="flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full" style="background:#059669;"></span>
+        <span class="text-xs" style="color:#374151;">Activo</span>
+      </div>
+    {% else %}
+      <div class="flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full" style="background:#94a3b8;"></span>
+        <span class="text-xs" style="color:#94a3b8;">Inactivo</span>
+      </div>
+    {% endif %}
+  </td>
+  <td class="px-4 py-3" style="white-space:nowrap;">
+    <form hx-post="/superadmin/admins/{{ a.pk }}/toggle/"
+          hx-target="#fila-admin-sa-{{ a.pk }}"
+          hx-swap="outerHTML"
+          style="display:inline;">
+      {% csrf_token %}
+      <button type="submit"
+              class="text-xs px-2.5 py-1.5 rounded-md"
+              style="border:1px solid #e2e8f0;color:#64748b;background:transparent;cursor:pointer;">
+        {% if a.is_active %}Desactivar{% else %}Activar{% endif %}
+      </button>
+    </form>
+  </td>
+</tr>
