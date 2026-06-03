@@ -2,21 +2,32 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
-class User(AbstractUser):
-    USUARIO = 'USUARIO'
-    TESTER  = 'TESTER'
-    ADMIN   = 'ADMIN'
+class CustomUser(AbstractUser):
+    USUARIO    = 'USUARIO'
+    TESTER     = 'TESTER'
+    ADMIN      = 'ADMIN'
+    SUPERADMIN = 'SUPERADMIN'
     ROL_CHOICES = [
-        (USUARIO, 'Usuario'),
-        (TESTER,  'Tester'),
-        (ADMIN,   'Admin'),
+        (USUARIO,    'Usuario'),
+        (TESTER,     'Tester'),
+        (ADMIN,      'Admin'),
+        (SUPERADMIN, 'SuperAdmin'),
     ]
 
-    email = models.EmailField(unique=True)
-    rol   = models.CharField(max_length=10, choices=ROL_CHOICES, default=USUARIO)
+    email                = models.EmailField(unique=True)
+    rol                  = models.CharField(max_length=10, choices=ROL_CHOICES, default=USUARIO)
+    plataformas_asignadas = models.ManyToManyField(
+        'platforms.Platform',
+        blank=True,
+        related_name='usuarios_asignados',
+    )
 
     USERNAME_FIELD  = 'email'
     REQUIRED_FIELDS = ['username']
+
+    @property
+    def is_superadmin(self):
+        return self.rol == self.SUPERADMIN
 
     @property
     def is_admin(self):
