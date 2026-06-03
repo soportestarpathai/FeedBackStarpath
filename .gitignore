@@ -9,3 +9,5 @@ db.sqlite3
 .superpowers/
 staticfiles/
 docs/
+feedbackeve.html
+feedbackeve_schema.sql
