@@ -73,10 +73,13 @@ def _reportes_tester(request):
     })
 
 
-@tester_required
+@login_required
 def nuevo_reporte_tester(request):
-    plataformas_ids = request.user.plataformas_asignadas.values_list('id', flat=True)
-    plataformas     = Platform.objects.filter(id__in=plataformas_ids, activa=True)
+    if request.user.rol == CustomUser.USUARIO:
+        plataformas = Platform.objects.filter(activa=True)
+    else:
+        plataformas_ids = request.user.plataformas_asignadas.values_list('id', flat=True)
+        plataformas     = Platform.objects.filter(id__in=plataformas_ids, activa=True)
 
     if request.method == 'POST':
         titulo    = request.POST.get('titulo', '').strip()
@@ -130,12 +133,16 @@ def nuevo_reporte_tester(request):
     })
 
 
-@tester_required
+@login_required
 def detalle_reporte_tester(request, pk):
     reporte  = get_object_or_404(Report.objects.select_related('plataforma', 'reportado_por', 'asignado_a'), pk=pk)
-    plat_ids = list(request.user.plataformas_asignadas.values_list('id', flat=True))
-    if reporte.plataforma_id not in plat_ids:
-        return HttpResponseForbidden()
+    if request.user.rol == CustomUser.USUARIO:
+        if reporte.reportado_por != request.user:
+            return HttpResponseForbidden()
+    else:
+        plat_ids = list(request.user.plataformas_asignadas.values_list('id', flat=True))
+        if reporte.plataforma_id not in plat_ids:
+            return HttpResponseForbidden()
     es_propio = (reporte.reportado_por == request.user)
     historial = reporte.historial.select_related('cambiado_por').all()
     return render(request, 'reports/detalle_tester.html', {
@@ -146,7 +153,7 @@ def detalle_reporte_tester(request, pk):
     })
 
 
-@tester_required
+@login_required
 @require_POST
 def cambiar_estado_tester(request, pk):
     reporte = get_object_or_404(Report, pk=pk)
