@@ -159,22 +159,22 @@
         </div>
 
         <!-- RNF -->
-        <div class="rounded-xl overflow-hidden" style="border:1px solid #c7d2fe;">
-          <div class="px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-white" style="background:#4f46e5;">
+        <div class="rounded-xl overflow-hidden" style="border:1px solid #a7f3d0;">
+          <div class="px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-white" style="background:#1a5c4f;">
             Requisitos No Funcionales (RNF) — Tester
           </div>
-          <div class="p-5" style="background:#f5f3ff;">
-            <p class="text-xs mb-3 leading-relaxed" style="color:#3730a3;">
+          <div class="p-5" style="background:#f0fdf9;">
+            <p class="text-xs mb-3 leading-relaxed" style="color:#065f46;">
               Restricciones de <strong>calidad</strong>: rendimiento, seguridad, usabilidad, disponibilidad.
             </p>
             <div class="flex flex-col gap-3">
               <template x-for="(rnf, i) in rnfs" :key="i">
                 <div class="flex items-start gap-2">
-                  <span class="text-xs font-bold flex-shrink-0 w-10 mt-2.5" style="color:#4f46e5;" x-text="'RNF'+(i+1)"></span>
+                  <span class="text-xs font-bold flex-shrink-0 w-10 mt-2.5" style="color:#1a5c4f;" x-text="'RNF'+(i+1)"></span>
                   <div class="flex-1 flex flex-col gap-1.5">
                     <select name="rnf_categorias" x-model="rnf.cat"
                             class="w-full px-3 py-2 rounded-lg text-xs outline-none"
-                            style="border:1.5px solid #c7d2fe;background:#fff;color:#374151;">
+                            style="border:1.5px solid #a7f3d0;background:#fff;color:#374151;">
                       <option value="">Categoría</option>
                       <option>Rendimiento</option><option>Seguridad</option><option>Usabilidad</option>
                       <option>Disponibilidad</option><option>Escalabilidad</option><option>Mantenibilidad</option>
@@ -182,7 +182,7 @@
                     <input type="text" name="rnf_descripciones" x-model="rnf.desc"
                            placeholder="El sistema debe responder en menos de 2 segundos..."
                            class="w-full px-3 py-2 rounded-lg text-sm outline-none"
-                           style="border:1.5px solid #c7d2fe;background:#fff;color:#0f172a;">
+                           style="border:1.5px solid #a7f3d0;background:#fff;color:#0f172a;">
                   </div>
                   <button type="button" @click="removeRNF(i)"
                           style="background:none;border:none;color:#9ca3af;font-size:18px;cursor:pointer;padding:0 4px;margin-top:6px;line-height:1;"
@@ -191,7 +191,7 @@
               </template>
             </div>
             <button type="button" @click="addRNF()" class="mt-3 w-full py-2 rounded-lg text-xs font-medium"
-                    style="border:1.5px dashed #a5b4fc;color:#4f46e5;background:#fff;">
+                    style="border:1.5px dashed #6ee7b7;color:#1a5c4f;background:#fff;">
               + Agregar requisito no funcional
             </button>
           </div>

@@ -12,7 +12,7 @@
   </div>
 
   <div class="mb-4 px-4 py-2.5 rounded-lg text-sm flex items-center gap-2"
-       style="background:#f5f3ff;border:1px solid #ddd6fe;color:#6d28d9;">
+       style="background:#f0fdf9;border:1px solid #ccfbf1;color:#0d1e2e;">
     🔐 Tienes acceso total al sistema. Actúa con responsabilidad.
   </div>
 
@@ -20,7 +20,7 @@
   <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
     <div class="bg-white rounded-xl p-4" style="border:1px solid #e2e8f0;">
       <div class="text-xs font-medium mb-1" style="color:#64748b;">Plataformas</div>
-      <div class="text-3xl font-bold" style="color:#7c3aed;">{{ plataformas|length }}</div>
+      <div class="text-3xl font-bold" style="color:#122938;">{{ plataformas|length }}</div>
     </div>
     <div class="bg-white rounded-xl p-4" style="border:1px solid #e2e8f0;">
       <div class="text-xs font-medium mb-1" style="color:#64748b;">Críticos globales</div>
@@ -42,7 +42,7 @@
     <div class="bg-white rounded-xl overflow-hidden" style="border:1px solid #e2e8f0;">
       <div class="px-5 py-4 flex items-center justify-between" style="border-bottom:1px solid #e2e8f0;">
         <h3 class="font-semibold text-sm" style="color:#0f172a;">Actividad por plataforma</h3>
-        <a href="/superadmin/plataformas/" class="text-xs" style="color:#7c3aed;">Gestionar →</a>
+        <a href="/superadmin/plataformas/" class="text-xs" style="color:#122938;">Gestionar →</a>
       </div>
       <table class="w-full text-sm">
         <thead>
@@ -91,7 +91,7 @@
       <div class="bg-white rounded-xl p-5" style="border:1px solid #e2e8f0;">
         <div class="flex items-center justify-between mb-3">
           <h3 class="font-semibold text-sm" style="color:#0f172a;">Administradores</h3>
-          <a href="/superadmin/admins/" class="text-xs" style="color:#7c3aed;">Ver todos →</a>
+          <a href="/superadmin/admins/" class="text-xs" style="color:#122938;">Ver todos →</a>
         </div>
         <div class="flex flex-col gap-2">
           {% for a in admins|slice:":6" %}

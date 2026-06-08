@@ -118,15 +118,15 @@
       {% endif %}
 
       {% if reporte.requisitos_no_funcionales %}
-      <div class="rounded-xl overflow-hidden" style="border:1px solid #c7d2fe;">
-        <div class="px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-white" style="background:#4f46e5;">Requisitos No Funcionales</div>
-        <div class="p-5" style="background:#f5f3ff;">
+      <div class="rounded-xl overflow-hidden" style="border:1px solid #a7f3d0;">
+        <div class="px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-white" style="background:#1a5c4f;">Requisitos No Funcionales</div>
+        <div class="p-5" style="background:#f0fdf9;">
           <ol class="flex flex-col gap-3">
             {% for rnf in reporte.requisitos_no_funcionales %}
             <li class="flex gap-2 text-sm">
-              <span class="font-bold flex-shrink-0" style="color:#4f46e5;">RNF{{ forloop.counter }}</span>
+              <span class="font-bold flex-shrink-0" style="color:#1a5c4f;">RNF{{ forloop.counter }}</span>
               <div>
-                {% if rnf.categoria %}<span class="text-xs font-semibold px-1.5 py-0.5 rounded mr-1.5" style="background:#e0e7ff;color:#4f46e5;">{{ rnf.categoria }}</span>{% endif %}
+                {% if rnf.categoria %}<span class="text-xs font-semibold px-1.5 py-0.5 rounded mr-1.5" style="background:#d1fae5;color:#1a5c4f;">{{ rnf.categoria }}</span>{% endif %}
                 <span style="color:#374151;">{{ rnf.descripcion }}</span>
               </div>
             </li>

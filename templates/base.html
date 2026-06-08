@@ -71,7 +71,7 @@
       <span class="text-sm hidden sm:block" style="color:#7a9ab5;">{{ user.email }}</span>
 
       {% if user.rol == 'SUPERADMIN' %}
-        <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full text-white flex-shrink-0" style="background:#7c3aed;">SuperAdmin</span>
+        <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full text-white flex-shrink-0" style="background:rgba(29,225,176,0.2);color:#1de1b0;border:1px solid rgba(29,225,176,0.4);">SuperAdmin</span>
       {% elif user.rol == 'ADMIN' %}
         <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full flex-shrink-0" style="background:rgba(29,225,176,0.15);color:#1de1b0;border:1px solid rgba(29,225,176,0.3);">Admin</span>
       {% elif user.rol == 'TESTER' %}
@@ -82,7 +82,7 @@
 
       <!-- Avatar -->
       <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
-           style="{% if user.rol == 'SUPERADMIN' %}background:#7c3aed;color:#fff{% elif user.rol == 'ADMIN' %}background:#1de1b0;color:#122938{% elif user.rol == 'TESTER' %}background:#1de1b0;color:#122938{% else %}background:#334155;color:#fff{% endif %}">
+           style="{% if user.rol == 'SUPERADMIN' %}background:#1de1b0;color:#122938{% elif user.rol == 'ADMIN' %}background:#1de1b0;color:#122938{% elif user.rol == 'TESTER' %}background:#1de1b0;color:#122938{% else %}background:#334155;color:#fff{% endif %}">
         {% if user.first_name %}{{ user.first_name.0|upper }}{% if user.last_name %}{{ user.last_name.0|upper }}{% endif %}{% else %}{{ user.email.0|upper }}{% endif %}
       </div>
 
