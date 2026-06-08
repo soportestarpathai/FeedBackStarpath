@@ -1,16 +1,17 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}FeedbackEve{% endblock %}</title>
+  <title>{% block title %}FeedBackStarpath{% endblock %}</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <script src="https://unpkg.com/htmx.org@1.9.12/dist/htmx.min.js"></script>
   <style>
     body { background-color: #f0f2f5; }
     .nav-link {
-      color: #94a3b8;
+      color: #7a9ab5;
       font-size: 14px;
       padding: 6px 12px;
       border-radius: 6px;
@@ -19,8 +20,8 @@
       white-space: nowrap;
     }
     .nav-link:hover, .nav-link.active {
-      background: rgba(255,255,255,0.08);
-      color: #fff;
+      background: rgba(29,225,176,0.12);
+      color: #1de1b0;
     }
     .toast-enter { animation: slideIn 0.3s ease-out; }
     @keyframes slideIn {
@@ -34,11 +35,12 @@
 
   <!-- ═══ NAVBAR ═══ -->
   {% if user.is_authenticated %}
-  <nav style="background:#0d1b2a; height:60px;" class="sticky top-0 z-50 flex items-center px-6 shadow-lg flex-shrink-0">
+  <nav style="background:#122938; height:60px;" class="sticky top-0 z-50 flex items-center px-6 shadow-lg flex-shrink-0">
 
     <!-- Logo -->
-    <a href="/" class="flex items-center gap-0.5 mr-8 flex-shrink-0 no-underline">
-      <span class="text-white font-bold text-lg tracking-tight">Feedback</span><span style="color:#60a5fa" class="font-bold text-lg">Eve</span>
+    <a href="/" class="flex items-center gap-2 mr-8 flex-shrink-0 no-underline">
+      <img src="{% static 'img/logo.jpg' %}" alt="Starpath" class="h-8 w-8 rounded object-contain" style="background:#fff;padding:2px;">
+      <span class="font-bold text-base tracking-tight" style="color:#fff;">FeedBack<span style="color:#1de1b0;">Starpath</span></span>
     </a>
 
     <!-- Links -->
@@ -66,21 +68,21 @@
 
     <!-- Right: user info -->
     <div class="flex items-center gap-3 flex-shrink-0 ml-4">
-      <span class="text-sm hidden sm:block" style="color:#94a3b8">{{ user.email }}</span>
+      <span class="text-sm hidden sm:block" style="color:#7a9ab5;">{{ user.email }}</span>
 
       {% if user.rol == 'SUPERADMIN' %}
-        <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full text-white flex-shrink-0" style="background:#7c3aed">SuperAdmin</span>
+        <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full text-white flex-shrink-0" style="background:#7c3aed;">SuperAdmin</span>
       {% elif user.rol == 'ADMIN' %}
-        <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full text-white flex-shrink-0" style="background:#2563eb">Admin</span>
+        <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full flex-shrink-0" style="background:rgba(29,225,176,0.15);color:#1de1b0;border:1px solid rgba(29,225,176,0.3);">Admin</span>
       {% elif user.rol == 'TESTER' %}
-        <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full text-white flex-shrink-0" style="background:#059669">Tester</span>
+        <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full flex-shrink-0" style="background:rgba(29,225,176,0.1);color:#1de1b0;">Tester</span>
       {% else %}
-        <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full text-white flex-shrink-0" style="background:#6b7280">Usuario</span>
+        <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full text-white flex-shrink-0" style="background:#334155;">Usuario</span>
       {% endif %}
 
-      <!-- Avatar initials -->
-      <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-           style="{% if user.rol == 'SUPERADMIN' %}background:#7c3aed{% elif user.rol == 'ADMIN' %}background:#2563eb{% elif user.rol == 'TESTER' %}background:#059669{% else %}background:#6b7280{% endif %}">
+      <!-- Avatar -->
+      <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+           style="{% if user.rol == 'SUPERADMIN' %}background:#7c3aed;color:#fff{% elif user.rol == 'ADMIN' %}background:#1de1b0;color:#122938{% elif user.rol == 'TESTER' %}background:#1de1b0;color:#122938{% else %}background:#334155;color:#fff{% endif %}">
         {% if user.first_name %}{{ user.first_name.0|upper }}{% if user.last_name %}{{ user.last_name.0|upper }}{% endif %}{% else %}{{ user.email.0|upper }}{% endif %}
       </div>
 
@@ -89,9 +91,9 @@
         {% csrf_token %}
         <button type="submit"
                 class="text-xs px-3 py-1.5 rounded-md flex-shrink-0"
-                style="color:#94a3b8; border:1px solid #334155; background:transparent; cursor:pointer;"
-                onmouseover="this.style.color='#fff';this.style.borderColor='#475569'"
-                onmouseout="this.style.color='#94a3b8';this.style.borderColor='#334155'">
+                style="color:#7a9ab5; border:1px solid #1e3a50; background:transparent; cursor:pointer;"
+                onmouseover="this.style.color='#1de1b0';this.style.borderColor='#1de1b0'"
+                onmouseout="this.style.color='#7a9ab5';this.style.borderColor='#1e3a50'">
           Salir
         </button>
       </form>
@@ -107,11 +109,11 @@
   <!-- ═══ FOOTER ═══ -->
   <footer class="py-3 px-6 flex justify-between items-center flex-shrink-0"
           style="border-top:1px solid #e2e8f0; background:#fff; font-size:12px; color:#94a3b8;">
-    <span>FeedbackEve © 2024 · Sistema de gestión de incidencias EVE 360</span>
+    <span>FeedBackStarpath © 2024 · Sistema de gestión de incidencias Starpath</span>
     <div class="flex gap-4">
-      <a href="#" style="color:#94a3b8">Términos</a>
-      <a href="#" style="color:#94a3b8">Privacidad</a>
-      <a href="#" style="color:#94a3b8">Soporte</a>
+      <a href="#" style="color:#94a3b8;">Términos</a>
+      <a href="#" style="color:#94a3b8;">Privacidad</a>
+      <a href="#" style="color:#94a3b8;">Soporte</a>
     </div>
   </footer>
 
@@ -119,9 +121,7 @@
   {% if messages %}
   <div class="fixed bottom-5 right-5 z-50 flex flex-col gap-2" x-data="{
     toasts: [{% for m in messages %}{ id: {{ forloop.counter }}, tag: '{{ m.tags }}', text: '{{ m|escapejs }}' }{% if not forloop.last %},{% endif %}{% endfor %}],
-    init() {
-      this.toasts.forEach(t => setTimeout(() => this.remove(t.id), 4000));
-    },
+    init() { this.toasts.forEach(t => setTimeout(() => this.remove(t.id), 4000)); },
     remove(id) { this.toasts = this.toasts.filter(t => t.id !== id); }
   }">
     <template x-for="toast in toasts" :key="toast.id">
@@ -131,7 +131,7 @@
              background: toast.tag.includes('success') ? '#16a34a'
                        : toast.tag.includes('error')   ? '#dc2626'
                        : toast.tag.includes('warning')  ? '#d97706'
-                       : '#2563eb'
+                       : '#122938'
            }">
         <span x-text="toast.tag.includes('success') ? '✓' : toast.tag.includes('error') ? '✕' : 'i'"></span>
         <span x-text="toast.text" class="flex-1"></span>

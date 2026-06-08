@@ -1,47 +1,50 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Iniciar sesión — FeedbackEve</title>
+  <title>Iniciar sesion — FeedBackStarpath</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="flex h-screen overflow-hidden">
 
-  <!-- Izquierda 40% -->
-  <div class="hidden md:flex flex-col justify-center items-center px-12" style="width:40%;background:#0d1b2a;flex-shrink:0;">
+  <div class="hidden md:flex flex-col justify-center items-center px-12" style="width:40%;background:#122938;flex-shrink:0;">
     <div class="text-center">
-      <div class="flex justify-center items-center gap-1 mb-6">
-        <span class="text-white font-bold text-4xl">Feedback</span><span style="color:#60a5fa" class="font-bold text-4xl">Eve</span>
+      <div class="flex justify-center items-center gap-3 mb-8">
+        <img src="{% static 'img/logo.jpg' %}" alt="Starpath" class="h-14 w-14 rounded-xl object-contain" style="background:#fff;padding:4px;">
+        <div class="text-left">
+          <div class="font-bold text-2xl tracking-tight leading-none" style="color:#fff;">FeedBack<span style="color:#1de1b0;">Starpath</span></div>
+          <div class="text-xs mt-1" style="color:#7a9ab5;">Sistema de gestion de incidencias</div>
+        </div>
       </div>
-      <p class="text-lg font-semibold mb-2" style="color:#e2e8f0">Sistema de gestión de incidencias</p>
-      <p class="text-sm leading-relaxed" style="color:#64748b">Centraliza bugs, sugerencias y quejas del ecosistema EVE 360. Asigna, da seguimiento y resuelve más rápido.</p>
-      <div class="mt-10 flex flex-col gap-4 text-left">
-        <div class="flex items-start gap-3 text-sm" style="color:#475569;">
-          <span class="w-1 h-1 rounded-full mt-2 flex-shrink-0" style="background:#60a5fa;"></span>
-          <span>Reportes de bugs con evidencia técnica y trazabilidad completa</span>
+      <p class="text-sm leading-relaxed mb-10" style="color:#4d7a96;">Centraliza bugs, sugerencias y quejas. Asigna, da seguimiento y resuelve mas rapido.</p>
+      <div class="flex flex-col gap-4 text-left">
+        <div class="flex items-start gap-3 text-sm" style="color:#4d7a96;">
+          <span class="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style="background:#1de1b0;"></span>
+          <span>Reportes de bugs con evidencia tecnica y trazabilidad completa</span>
         </div>
-        <div class="flex items-start gap-3 text-sm" style="color:#475569;">
-          <span class="w-1 h-1 rounded-full mt-2 flex-shrink-0" style="background:#60a5fa;"></span>
-          <span>Dashboard diferenciado por rol con métricas en tiempo real</span>
+        <div class="flex items-start gap-3 text-sm" style="color:#4d7a96;">
+          <span class="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style="background:#1de1b0;"></span>
+          <span>Dashboard diferenciado por rol con metricas en tiempo real</span>
         </div>
-        <div class="flex items-start gap-3 text-sm" style="color:#475569;">
-          <span class="w-1 h-1 rounded-full mt-2 flex-shrink-0" style="background:#60a5fa;"></span>
-          <span>Exportación PDF con historial de estados y análisis completo</span>
+        <div class="flex items-start gap-3 text-sm" style="color:#4d7a96;">
+          <span class="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style="background:#1de1b0;"></span>
+          <span>Exportacion PDF con historial de estados y analisis completo</span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Derecha 60% -->
   <div class="flex-1 flex flex-col justify-center items-center px-8 py-12 bg-white overflow-y-auto">
     <div class="w-full max-w-sm">
-      <div class="flex justify-center items-center gap-1 mb-8 md:hidden">
-        <span class="font-bold text-2xl" style="color:#0d1b2a">Feedback</span><span style="color:#2563eb" class="font-bold text-2xl">Eve</span>
+      <div class="flex justify-center items-center gap-2 mb-8 md:hidden">
+        <img src="{% static 'img/logo.jpg' %}" alt="Starpath" class="h-9 w-9 rounded-lg object-contain">
+        <span class="font-bold text-xl" style="color:#122938;">FeedBack<span style="color:#1de1b0;">Starpath</span></span>
       </div>
 
-      <h1 class="text-2xl font-bold mb-1" style="color:#0f172a">Bienvenido de vuelta</h1>
-      <p class="text-sm mb-8" style="color:#64748b">Ingresa con tu cuenta para continuar</p>
+      <h1 class="text-2xl font-bold mb-1" style="color:#0f172a;">Bienvenido de vuelta</h1>
+      <p class="text-sm mb-8" style="color:#64748b;">Ingresa con tu cuenta para continuar</p>
 
       {% if error %}
       <div class="mb-4 px-4 py-3 rounded-lg text-sm" style="background:#fef2f2;border:1px solid #fecaca;color:#dc2626;">
@@ -52,34 +55,34 @@
       <form method="post" class="flex flex-col gap-4">
         {% csrf_token %}
         <div>
-          <label class="block text-sm font-medium mb-1.5" style="color:#374151">Correo electrónico</label>
+          <label class="block text-sm font-medium mb-1.5" style="color:#374151;">Correo electronico</label>
           <input type="email" name="email" autocomplete="email" required
                  value="{{ form.email.value|default:'' }}" placeholder="tu@empresa.com"
                  class="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
                  style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#0f172a;"
-                 onfocus="this.style.borderColor='#2563eb';this.style.background='#fff'"
+                 onfocus="this.style.borderColor='#1de1b0';this.style.background='#fff'"
                  onblur="this.style.borderColor='#e2e8f0';this.style.background='#f8fafc'">
         </div>
         <div>
-          <label class="block text-sm font-medium mb-1.5" style="color:#374151">Contraseña</label>
+          <label class="block text-sm font-medium mb-1.5" style="color:#374151;">Contrasena</label>
           <input type="password" name="password" autocomplete="current-password" required
-                 placeholder="••••••••"
+                 placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
                  class="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
                  style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#0f172a;"
-                 onfocus="this.style.borderColor='#2563eb';this.style.background='#fff'"
+                 onfocus="this.style.borderColor='#1de1b0';this.style.background='#fff'"
                  onblur="this.style.borderColor='#e2e8f0';this.style.background='#f8fafc'">
         </div>
         <button type="submit"
-                class="w-full py-2.5 rounded-lg text-sm font-semibold text-white mt-1"
-                style="background:#2563eb;"
-                onmouseover="this.style.background='#1d4ed8'"
-                onmouseout="this.style.background='#2563eb'">
-          Iniciar sesión
+                class="w-full py-2.5 rounded-lg text-sm font-bold mt-1"
+                style="background:#122938;color:#1de1b0;"
+                onmouseover="this.style.background='#0d1e2e'"
+                onmouseout="this.style.background='#122938'">
+          Iniciar sesion
         </button>
       </form>
 
-      <p class="text-center text-sm mt-6" style="color:#64748b">
-        ¿No tienes cuenta? <a href="/registro/" class="font-semibold" style="color:#2563eb">Regístrate aquí</a>
+      <p class="text-center text-sm mt-6" style="color:#64748b;">
+        No tienes cuenta? <a href="/registro/" class="font-semibold" style="color:#1de1b0;">Registrate aqui</a>
       </p>
     </div>
   </div>
