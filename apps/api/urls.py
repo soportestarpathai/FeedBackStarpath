@@ -4,6 +4,7 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, Sp
 from . import views
 
 urlpatterns = [
+    path('',                    views.api_root,                 name='api_root'),
     # ── JWT auth ────────────────────────────────────────────────────────────
     path('auth/token/',         TokenObtainPairView.as_view(),  name='api_token'),
     path('auth/token/refresh/', TokenRefreshView.as_view(),     name='api_token_refresh'),

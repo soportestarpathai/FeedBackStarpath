@@ -1,4 +1,6 @@
 from rest_framework import generics, status
+from rest_framework.decorators import api_view, permission_classes as pc
+from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -13,6 +15,39 @@ from .serializers import (
     ReportCreateSerializer, EstadoSerializer, UserSerializer,
 )
 from .permissions import IsSuperAdmin, IsAdminOrAbove, IsTesterOrAbove
+
+
+# ── API Root ─────────────────────────────────────────────────────────────────
+
+@extend_schema(exclude=True)
+@api_view(['GET'])
+@pc([AllowAny])
+def api_root(request):
+    base = request.build_absolute_uri('/api/v1/')
+    return Response({
+        'docs':              base + 'docs/',
+        'redoc':             base + 'redoc/',
+        'schema':            base + 'schema/',
+        'auth': {
+            'token':         base + 'auth/token/',
+            'token_refresh': base + 'auth/token/refresh/',
+            'me':            base + 'auth/me/',
+        },
+        'reportes': {
+            'list':          base + 'reportes/',
+            'crear':         base + 'reportes/crear/',
+            'detalle':       base + 'reportes/{id}/',
+            'estado':        base + 'reportes/{id}/estado/',
+            'asignar':       base + 'reportes/{id}/asignar/',
+        },
+        'plataformas': {
+            'list':          base + 'plataformas/',
+            'crear':         base + 'plataformas/crear/',
+        },
+        'usuarios': {
+            'list':          base + 'usuarios/',
+        },
+    })
 
 
 # ── Auth info ────────────────────────────────────────────────────────────────
