@@ -87,7 +87,7 @@ def nuevo_reporte_tester(request):
         plat_id   = request.POST.get('plataforma', '')
         tipo      = request.POST.get('tipo', Report.BUG)
         severidad = request.POST.get('severidad', Report.MEDIA)
-        if severidad == Report.CRITICA:
+        if severidad == Report.CRITICA and request.user.rol in (CustomUser.USUARIO, CustomUser.TESTER):
             severidad = Report.ALTA
         url       = request.POST.get('url_pagina', '').strip()
         pasos     = request.POST.get('pasos_reproducir', '').strip()
@@ -163,14 +163,10 @@ def cambiar_estado_tester(request, pk):
     nota  = request.POST.get('nota', '').strip()
     if nuevo in dict(Report.ESTADO_CHOICES) and nuevo != reporte.estado:
         reporte.cambiar_estado(nuevo, request.user, nota)
-    plat_ids = list(request.user.plataformas_asignadas.values_list('id', flat=True))
-    qs = Report.objects.select_related('plataforma', 'reportado_por', 'asignado_a').filter(
-        plataforma_id__in=plat_ids
-    )
-    return render(request, 'partials/fila_tester.html', {
-        'r':    reporte,
-        'user': request.user,
-    })
+    # HTMX table row update; non-HTMX (detail page form) → redirect back
+    if request.headers.get('HX-Request'):
+        return render(request, 'partials/fila_tester.html', {'r': reporte, 'user': request.user})
+    return redirect(f'/reportes/{pk}/')
 
 
 @tester_required
@@ -236,6 +232,9 @@ def _qs_admin(request):
     if severidad: qs = qs.filter(severidad=severidad)
     if asignado == 'sin':  qs = qs.filter(asignado_a__isnull=True)
     if asignado == 'con':  qs = qs.filter(asignado_a__isnull=False)
+    reportado_por = request.GET.get('reportado_por', '')
+    if reportado_por and reportado_por.isdigit():
+        qs = qs.filter(reportado_por_id=int(reportado_por))
     return qs
 
 

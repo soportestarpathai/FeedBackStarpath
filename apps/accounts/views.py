@@ -73,9 +73,11 @@ def usuarios_admin(request):
     if estado == 'activo':   qs = qs.filter(is_active=True)
     if estado == 'inactivo': qs = qs.filter(is_active=False)
     if q:      qs = qs.filter(email__icontains=q)
+    from apps.platforms.models import Platform
     return render(request, 'platforms/usuarios_admin.html', {
-        'usuarios': qs,
-        'rol_choices': [(CustomUser.TESTER, 'Tester'), (CustomUser.USUARIO, 'Usuario')],
+        'usuarios':         qs,
+        'rol_choices':      [(CustomUser.TESTER, 'Tester'), (CustomUser.USUARIO, 'Usuario')],
+        'admin_plataformas': Platform.objects.filter(id__in=ids),
     })
 
 
@@ -86,8 +88,24 @@ def cambiar_rol(request, pk):
     user = get_object_or_404(CustomUser, pk=pk)
     if not user.plataformas_asignadas.filter(id__in=ids).exists():
         return HttpResponseForbidden()
-    nuevo_rol = request.POST.get('rol', '')
-    if nuevo_rol in (CustomUser.TESTER, CustomUser.USUARIO):
-        user.rol = nuevo_rol
+
+    if request.POST.get('desactivar'):
+        user.is_active = False
         user.save()
-    return render(request, 'partials/fila_usuario_admin.html', {'u': user})
+    else:
+        nuevo_rol = request.POST.get('rol', '')
+        if nuevo_rol in (CustomUser.TESTER, CustomUser.USUARIO):
+            user.rol = nuevo_rol
+            user.save()
+            # Al promover a Tester, asignar las plataformas del admin si aún no tiene ninguna
+            if nuevo_rol == CustomUser.TESTER and not user.plataformas_asignadas.exists():
+                from apps.platforms.models import Platform
+                for pid in ids:
+                    try:
+                        user.plataformas_asignadas.add(Platform.objects.get(pk=pid))
+                    except Platform.DoesNotExist:
+                        pass
+
+    from apps.platforms.models import Platform
+    admin_plataformas = Platform.objects.filter(id__in=ids)
+    return render(request, 'partials/fila_usuario_admin.html', {'u': user, 'admin_plataformas': admin_plataformas})

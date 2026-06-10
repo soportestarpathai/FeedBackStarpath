@@ -31,10 +31,8 @@
           </tr>
         </thead>
         <tbody>
-          {% for a in admins %}
-            {% with reportes_mes=0 %}
-            {% include 'partials/fila_admin_sa.html' %}
-            {% endwith %}
+          {% for item in admins %}
+            {% include 'partials/fila_admin_sa.html' with a=item.a reportes_mes=item.reportes_mes %}
           {% empty %}
           <tr><td colspan="6" class="px-4 py-8 text-center text-sm" style="color:#94a3b8;">Sin administradores registrados</td></tr>
           {% endfor %}

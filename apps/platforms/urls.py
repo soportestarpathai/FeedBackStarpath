@@ -9,5 +9,6 @@ urlpatterns = [
     path('superadmin/admins/',                  views.lista_admins,         name='sa_admins'),
     path('superadmin/admins/crear/',            views.crear_admin,          name='sa_crear_admin'),
     path('superadmin/admins/<int:pk>/toggle/',  views.toggle_admin,         name='sa_toggle_admin'),
+    path('superadmin/admins/<int:pk>/revocar/', views.revocar_admin,         name='sa_revocar_admin'),
     path('superadmin/config/',                  views.config_global,        name='sa_config'),
 ]

@@ -34,16 +34,27 @@
     {% endif %}
   </td>
   <td class="px-4 py-3" style="white-space:nowrap;">
-    <form hx-post="/superadmin/admins/{{ a.pk }}/toggle/"
-          hx-target="#fila-admin-sa-{{ a.pk }}"
-          hx-swap="outerHTML"
-          style="display:inline;">
-      {% csrf_token %}
-      <button type="submit"
-              class="text-xs px-2.5 py-1.5 rounded-md"
-              style="border:1px solid #e2e8f0;color:#64748b;background:transparent;cursor:pointer;">
-        {% if a.is_active %}Desactivar{% else %}Activar{% endif %}
-      </button>
-    </form>
+    <div class="flex items-center gap-1.5">
+      <form hx-post="/superadmin/admins/{{ a.pk }}/toggle/"
+            hx-target="#fila-admin-sa-{{ a.pk }}"
+            hx-swap="outerHTML"
+            style="display:inline;">
+        {% csrf_token %}
+        <button type="submit"
+                class="text-xs px-2.5 py-1.5 rounded-md"
+                style="border:1px solid #e2e8f0;color:#64748b;background:transparent;cursor:pointer;">
+          {% if a.is_active %}Desactivar{% else %}Activar{% endif %}
+        </button>
+      </form>
+      <form method="post" action="/superadmin/admins/{{ a.pk }}/revocar/"
+            onsubmit="return confirm('¿Revocar el rol Admin de {{ a.email }}? Pasará a ser Usuario.')">
+        {% csrf_token %}
+        <button type="submit"
+                class="text-xs px-2.5 py-1.5 rounded-md"
+                style="border:1px solid #fecaca;color:#dc2626;background:transparent;cursor:pointer;">
+          Revocar
+        </button>
+      </form>
+    </div>
   </td>
 </tr>

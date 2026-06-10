@@ -110,10 +110,16 @@ def eliminar_plataforma(request, pk):
 
 @superadmin_required
 def lista_admins(request):
-    admins = CustomUser.objects.filter(rol=CustomUser.ADMIN).prefetch_related('plataformas_asignadas').order_by('email')
+    hace_30 = timezone.now() - timedelta(days=30)
+    admins_qs = CustomUser.objects.filter(rol=CustomUser.ADMIN).prefetch_related('plataformas_asignadas').order_by('email')
+    admins = []
+    for a in admins_qs:
+        plat_ids = list(a.plataformas_asignadas.values_list('id', flat=True))
+        rm = Report.objects.filter(plataforma_id__in=plat_ids, creado_en__gte=hace_30).count()
+        admins.append({'a': a, 'reportes_mes': rm})
     plataformas = Platform.objects.filter(activa=True)
     return render(request, 'superadmin/lista_admins.html', {
-        'admins':     admins,
+        'admins':      admins,
         'plataformas': plataformas,
     })
 
@@ -141,12 +147,9 @@ def crear_admin(request):
 
         user.rol = CustomUser.ADMIN
         user.save()
-        for plat_id in plats:
-            if plat_id.isdigit():
-                try:
-                    user.plataformas_asignadas.add(Platform.objects.get(pk=int(plat_id)))
-                except Platform.DoesNotExist:
-                    pass
+        nuevas_plats = [Platform.objects.get(pk=int(p)) for p in plats if p.isdigit() and Platform.objects.filter(pk=int(p)).exists()]
+        if nuevas_plats:
+            user.plataformas_asignadas.set(nuevas_plats)
         messages.success(request, f'{email} ahora tiene rol Admin.')
         return redirect('/superadmin/admins/')
 
@@ -165,6 +168,17 @@ def toggle_admin(request, pk):
         creado_en__gte=hace_30,
     ).count()
     return render(request, 'partials/fila_admin_sa.html', {'a': user, 'reportes_mes': reportes_mes})
+
+
+@superadmin_required
+@require_POST
+def revocar_admin(request, pk):
+    user = get_object_or_404(CustomUser, pk=pk, rol=CustomUser.ADMIN)
+    user.rol = CustomUser.USUARIO
+    user.plataformas_asignadas.clear()
+    user.save()
+    messages.success(request, f'Rol de {user.email} revocado. Ahora es Usuario.')
+    return redirect('/superadmin/admins/')
 
 
 @superadmin_required
