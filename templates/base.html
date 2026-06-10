@@ -1,4 +1,4 @@
-{% load static %}
+{% load static icons %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -133,7 +133,9 @@
                        : toast.tag.includes('warning')  ? '#d97706'
                        : '#122938'
            }">
-        <span x-text="toast.tag.includes('success') ? '✓' : toast.tag.includes('error') ? '✕' : 'i'"></span>
+        <span x-show="toast.tag.includes('success')" style="display:none;">{% icon "check-circle" size="16" %}</span>
+        <span x-show="toast.tag.includes('error')" style="display:none;">{% icon "x-circle" size="16" %}</span>
+        <span x-show="!toast.tag.includes('success') && !toast.tag.includes('error')" style="display:none;">{% icon "info" size="16" %}</span>
         <span x-text="toast.text" class="flex-1"></span>
         <button @click="remove(toast.id)" class="opacity-70 hover:opacity-100 text-base leading-none">×</button>
       </div>

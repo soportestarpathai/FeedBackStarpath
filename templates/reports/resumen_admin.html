@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load report_tags %}
+{% load report_tags icons %}
 {% block title %}Resumen — FeedBackStarpath{% endblock %}
 {% block nav_ad_res %}active{% endblock %}
 
@@ -63,7 +63,7 @@
             <div class="flex flex-col items-end gap-1 flex-shrink-0">
               {% badge_tipo r.tipo %}
               {% if not r.asignado_a %}
-              <span class="text-xs font-medium" style="color:#dc2626;">Sin asignar ⚠</span>
+              <span class="text-xs font-medium flex items-center gap-1" style="color:#dc2626;">Sin asignar {% icon "warning" size="13" color="#dc2626" %}</span>
               {% endif %}
             </div>
           </div>
@@ -116,7 +116,7 @@
         {% if info.criticos_sin > 0 %}
         <div class="mt-3 px-3 py-2 rounded-lg text-xs flex items-center gap-2"
              style="background:#fef2f2;border:1px solid #fecaca;color:#dc2626;">
-          ⚠ Hay {{ info.criticos_sin }} reporte{{ info.criticos_sin|pluralize }} crítico{{ info.criticos_sin|pluralize }} sin asignar
+          {% icon "warning" size="14" color="#dc2626" %} Hay {{ info.criticos_sin }} reporte{{ info.criticos_sin|pluralize }} crítico{{ info.criticos_sin|pluralize }} sin asignar
         </div>
         {% endif %}
       </div>
@@ -129,8 +129,8 @@
         <div class="flex flex-col gap-3">
           {% for h in actividad_reciente %}
           <div class="flex items-start gap-3">
-            <span class="text-base flex-shrink-0 mt-0.5">
-              {% if h.estado_nuevo == 'RESUELTO' %}✅{% elif h.estado_nuevo == 'EN_REVISION' %}🔄{% elif h.estado_nuevo == 'CERRADO' %}🔒{% else %}📋{% endif %}
+            <span class="flex-shrink-0 mt-0.5">
+              {% if h.estado_nuevo == 'RESUELTO' %}{% icon "check-circle" size="18" color="#059669" %}{% elif h.estado_nuevo == 'EN_REVISION' %}{% icon "refresh" size="18" color="#d97706" %}{% elif h.estado_nuevo == 'CERRADO' %}{% icon "lock" size="18" color="#64748b" %}{% else %}{% icon "clipboard" size="18" color="#2563eb" %}{% endif %}
             </span>
             <div class="min-w-0">
               <p class="text-sm truncate" style="color:#0f172a;">

@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load report_tags %}
+{% load report_tags icons %}
 {% block title %}Reporte #{{ reporte.pk }} — FeedBackStarpath{% endblock %}
 {% block nav_te_rep %}active{% endblock %}
 
@@ -46,7 +46,7 @@
           {% dot_estado reporte.estado %}
           <strong class="text-sm" style="color:#0f172a;">{% label_estado reporte.estado %}</strong>
         </div>
-        <p class="text-xs mt-1" style="color:#94a3b8;">🔒 Solo Admin puede cambiar el estado</p>
+        <p class="text-xs mt-1 flex items-center gap-1" style="color:#94a3b8;">{% icon "lock" size="12" color="#94a3b8" %} Solo Admin puede cambiar el estado</p>
       {% endif %}
     </div>
   </div>

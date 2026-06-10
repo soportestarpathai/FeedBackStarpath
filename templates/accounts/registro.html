@@ -1,4 +1,4 @@
-{% load static %}
+{% load static icons %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -18,9 +18,9 @@
       <p class="text-lg font-semibold mb-2" style="color:#e2e8f0">Únete al equipo Starpath</p>
       <p class="text-sm leading-relaxed" style="color:#64748b">Crea tu cuenta y empieza a reportar incidencias. El equipo técnico las revisará y dará seguimiento.</p>
       <div class="mt-10 flex flex-col gap-3 text-left">
-        <div class="flex items-center gap-3 text-sm" style="color:#64748b"><span>✅</span> Acceso inmediato al sistema</div>
-        <div class="flex items-center gap-3 text-sm" style="color:#64748b"><span>🔔</span> Seguimiento en tiempo real</div>
-        <div class="flex items-center gap-3 text-sm" style="color:#64748b"><span>🔒</span> Datos seguros y privados</div>
+        <div class="flex items-center gap-3 text-sm" style="color:#64748b">{% icon "check-circle" size="18" color="#1de1b0" %} Acceso inmediato al sistema</div>
+        <div class="flex items-center gap-3 text-sm" style="color:#64748b">{% icon "bell" size="18" color="#1de1b0" %} Seguimiento en tiempo real</div>
+        <div class="flex items-center gap-3 text-sm" style="color:#64748b">{% icon "lock" size="18" color="#1de1b0" %} Datos seguros y privados</div>
       </div>
     </div>
   </div>
@@ -37,7 +37,7 @@
 
       <!-- Info banner -->
       <div class="mb-5 px-4 py-3 rounded-lg text-sm flex items-center gap-2" style="background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;">
-        <span>ℹ</span> Tu cuenta iniciará con rol <strong>Usuario</strong>. Un administrador puede cambiar tu rol si es necesario.
+        {% icon "info" size="16" color="#1d4ed8" %} Tu cuenta iniciará con rol <strong>Usuario</strong>. Un administrador puede cambiar tu rol si es necesario.
       </div>
 
       {% if form.errors %}

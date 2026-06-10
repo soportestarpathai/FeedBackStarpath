@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load report_tags %}
+{% load report_tags icons %}
 {% block title %}Dashboard — FeedBackStarpath{% endblock %}
 {% block nav_sa_dash %}active{% endblock %}
 
@@ -13,7 +13,7 @@
 
   <div class="mb-4 px-4 py-2.5 rounded-lg text-sm flex items-center gap-2"
        style="background:#f0fdf9;border:1px solid #ccfbf1;color:#0d1e2e;">
-    🔐 Tienes acceso total al sistema. Actúa con responsabilidad.
+    {% icon "shield" size="16" color="#0d9488" %} Tienes acceso total al sistema. Actúa con responsabilidad.
   </div>
 
   <!-- Stats globales -->

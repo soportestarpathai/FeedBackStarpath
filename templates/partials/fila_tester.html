@@ -1,4 +1,4 @@
-{% load report_tags %}
+{% load report_tags icons %}
 <tr id="fila-{{ r.pk }}" style="border-bottom:1px solid #f1f5f9;" class="hover:bg-slate-50">
   <!-- ID -->
   <td class="px-4 py-3" style="color:#94a3b8;font-size:11px;">
@@ -44,7 +44,7 @@
       <div class="flex items-center gap-1.5">
         {% dot_estado r.estado %}
         <span class="text-xs" style="color:#374151;">{% label_estado r.estado %}</span>
-        <span title="Solo Admin puede cambiar este estado" style="color:#94a3b8;font-size:11px;">🔒</span>
+        {% icon "lock" size="12" color="#94a3b8" %}
       </div>
     {% endif %}
   </td>

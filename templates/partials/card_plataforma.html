@@ -14,7 +14,8 @@
   <p class="text-xs mb-2" style="color:#64748b;">{{ item.plataforma.descripcion }}</p>
   {% endif %}
   {% if not item.admins %}
-  <div class="mb-2 px-2 py-1 rounded text-xs" style="background:#fef2f2;color:#dc2626;">⚠ Sin admin asignado</div>
+  {% load icons %}
+  <div class="mb-2 px-2 py-1 rounded text-xs flex items-center gap-1" style="background:#fef2f2;color:#dc2626;">{% icon "warning" size="13" color="#dc2626" %} Sin admin asignado</div>
   {% endif %}
   <p class="text-xs mb-4" style="color:#94a3b8;">{{ item.abiertos }} abiertos · {{ item.totales }} totales</p>
   <div class="flex gap-2">
