@@ -120,33 +120,36 @@ def lista_admins(request):
 
 @superadmin_required
 def crear_admin(request):
+    plataformas = Platform.objects.filter(activa=True)
     if request.method == 'POST':
-        email     = request.POST.get('email', '').strip()
-        first_name= request.POST.get('first_name', '').strip()
-        last_name = request.POST.get('last_name', '').strip()
-        password  = request.POST.get('password', '').strip()
-        plats     = request.POST.getlist('plataformas')
+        email = request.POST.get('email', '').strip().lower()
+        plats = request.POST.getlist('plataformas')
 
-        if email and password:
-            base = email.split('@')[0]
-            username = base
-            n = 1
-            while CustomUser.objects.filter(username=username).exists():
-                username = f'{base}{n}'; n += 1
-            user = CustomUser.objects.create_user(
-                username=username, email=email, password=password,
-                first_name=first_name, last_name=last_name, rol=CustomUser.ADMIN,
-            )
-            for plat_id in plats:
-                if plat_id.isdigit():
-                    try:
-                        user.plataformas_asignadas.add(Platform.objects.get(pk=int(plat_id)))
-                    except Platform.DoesNotExist:
-                        pass
-            messages.success(request, f'Admin {email} creado correctamente.')
+        try:
+            user = CustomUser.objects.get(email=email)
+        except CustomUser.DoesNotExist:
+            messages.error(request, f'No existe ningún usuario con el correo {email}.')
+            return render(request, 'superadmin/crear_admin.html', {
+                'plataformas': plataformas, 'email_previo': email,
+            })
+
+        if user.rol == CustomUser.SUPERADMIN:
+            messages.error(request, f'{email} ya es SuperAdmin y no puede ser degradado desde aquí.')
+            return render(request, 'superadmin/crear_admin.html', {
+                'plataformas': plataformas, 'email_previo': email,
+            })
+
+        user.rol = CustomUser.ADMIN
+        user.save()
+        for plat_id in plats:
+            if plat_id.isdigit():
+                try:
+                    user.plataformas_asignadas.add(Platform.objects.get(pk=int(plat_id)))
+                except Platform.DoesNotExist:
+                    pass
+        messages.success(request, f'{email} ahora tiene rol Admin.')
         return redirect('/superadmin/admins/')
 
-    plataformas = Platform.objects.filter(activa=True)
     return render(request, 'superadmin/crear_admin.html', {'plataformas': plataformas})
 
 
