@@ -8,15 +8,6 @@
   <h1 class="text-xl font-bold mb-1" style="color:#0f172a;">Asignar rol Admin</h1>
   <p class="text-sm mb-6" style="color:#64748b;">El usuario debe estar previamente registrado en el sistema.</p>
 
-  {% if messages %}
-    {% for m in messages %}
-    <div class="mb-4 px-4 py-3 rounded-lg text-sm"
-         style="background:{% if 'error' in m.tags %}#fef2f2;border:1px solid #fecaca;color:#dc2626{% else %}#f0fdf4;border:1px solid #bbf7d0;color:#15803d{% endif %};">
-      {{ m }}
-    </div>
-    {% endfor %}
-  {% endif %}
-
   <form method="post" class="bg-white rounded-xl p-6" style="border:1px solid #e2e8f0;">
     {% csrf_token %}
     <div class="flex flex-col gap-4">

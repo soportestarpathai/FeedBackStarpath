@@ -29,7 +29,7 @@
       </p>
     </div>
     <div class="flex-shrink-0 text-right">
-      {% if es_propio %}
+      {% if puede_cambiar_estado %}
         <form method="post" action="/reportes/{{ reporte.pk }}/estado/" class="flex items-center gap-2">
           {% csrf_token %}
           <select name="estado" class="px-3 py-1.5 rounded-lg text-sm outline-none"
@@ -46,7 +46,7 @@
           {% dot_estado reporte.estado %}
           <strong class="text-sm" style="color:#0f172a;">{% label_estado reporte.estado %}</strong>
         </div>
-        <p class="text-xs mt-1 flex items-center gap-1" style="color:#94a3b8;">{% icon "lock" size="12" color="#94a3b8" %} Solo Admin puede cambiar el estado</p>
+        <p class="text-xs mt-1 flex items-center gap-1" style="color:#94a3b8;">{% icon "lock" size="12" color="#94a3b8" %} El estado lo gestiona el equipo de testing</p>
       {% endif %}
     </div>
   </div>

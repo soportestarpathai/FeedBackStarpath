@@ -144,12 +144,17 @@ def detalle_reporte_tester(request, pk):
         if reporte.plataforma_id not in plat_ids:
             return HttpResponseForbidden()
     es_propio = (reporte.reportado_por == request.user)
+    puede_cambiar_estado = (
+        request.user.rol == CustomUser.TESTER
+        or es_propio
+    )
     historial = reporte.historial.select_related('cambiado_por').all()
     return render(request, 'reports/detalle_tester.html', {
-        'reporte':        reporte,
-        'es_propio':      es_propio,
-        'historial':      historial,
-        'estado_choices': Report.ESTADO_CHOICES,
+        'reporte':              reporte,
+        'es_propio':            es_propio,
+        'puede_cambiar_estado': puede_cambiar_estado,
+        'historial':            historial,
+        'estado_choices':       Report.ESTADO_CHOICES,
     })
 
 
@@ -157,8 +162,13 @@ def detalle_reporte_tester(request, pk):
 @require_POST
 def cambiar_estado_tester(request, pk):
     reporte = get_object_or_404(Report, pk=pk)
-    if reporte.reportado_por != request.user:
-        return HttpResponseForbidden()
+    if request.user.rol == CustomUser.USUARIO:
+        if reporte.reportado_por != request.user:
+            return HttpResponseForbidden()
+    elif request.user.rol == CustomUser.TESTER:
+        plat_ids = list(request.user.plataformas_asignadas.values_list('id', flat=True))
+        if reporte.plataforma_id not in plat_ids:
+            return HttpResponseForbidden()
     nuevo = request.POST.get('estado', '')
     nota  = request.POST.get('nota', '').strip()
     if nuevo in dict(Report.ESTADO_CHOICES) and nuevo != reporte.estado:
