@@ -121,6 +121,15 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 }
 
+# ── Email (verificación de cuenta) ──────────────────────────────────────────
+EMAIL_BACKEND   = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST      = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT      = int(os.getenv('EMAIL_PORT', 587))
+EMAIL_USE_TLS   = True
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
+DEFAULT_FROM_EMAIL  = os.getenv('EMAIL_HOST_USER', 'FeedBackStarpath <noreply@feedbackstarpath.com>')
+
 # GTK3 for WeasyPrint on Windows
 import sys
 if sys.platform == 'win32' and 'WEASYPRINT_DLL_DIRECTORIES' not in os.environ:

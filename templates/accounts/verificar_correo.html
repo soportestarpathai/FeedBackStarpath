@@ -1,0 +1,144 @@
+{% load static icons %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verificar correo — FeedBackStarpath</title>
+  <link rel="icon" type="image/jpeg" href="{% static 'img/logo.jpg' %}">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="flex h-screen overflow-hidden">
+
+  <!-- Izquierda -->
+  <div class="hidden md:flex flex-col justify-center items-center px-12" style="width:40%;background:#122938;flex-shrink:0;">
+    <div class="text-center">
+      <div class="flex justify-center items-center gap-1 mb-6">
+        <span class="text-white font-bold text-4xl">FeedBack</span><span style="color:#1de1b0" class="font-bold text-4xl">Starpath</span>
+      </div>
+      <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style="background:rgba(29,225,176,0.15);border:2px solid #1de1b0;">
+        {% icon "check-circle" size="40" color="#1de1b0" %}
+      </div>
+      <p class="text-lg font-semibold mb-2" style="color:#e2e8f0">Casi listo</p>
+      <p class="text-sm leading-relaxed" style="color:#64748b">Te enviamos un código de 6 dígitos a tu correo. Ingrésalo para activar tu cuenta.</p>
+      <div class="mt-8 flex flex-col gap-3 text-left">
+        <div class="flex items-center gap-3 text-sm" style="color:#64748b;">{% icon "shield" size="16" color="#1de1b0" %} Solo funciona con correos reales</div>
+        <div class="flex items-center gap-3 text-sm" style="color:#64748b;">{% icon "lock" size="16" color="#1de1b0" %} El código expira en 15 minutos</div>
+        <div class="flex items-center gap-3 text-sm" style="color:#64748b;">{% icon "refresh" size="16" color="#1de1b0" %} Puedes solicitar un nuevo código</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Derecha -->
+  <div class="flex-1 flex flex-col justify-center items-center px-8 bg-white overflow-y-auto">
+    <div class="w-full max-w-sm">
+
+      <!-- Logo mobile -->
+      <div class="flex justify-center items-center gap-1 mb-6 md:hidden">
+        <img src="{% static 'img/logo.jpg' %}" alt="" class="h-9 w-9 rounded-lg object-contain">
+        <span class="font-bold text-xl" style="color:#122938;">FeedBack<span style="color:#1de1b0;">Starpath</span></span>
+      </div>
+
+      <div class="flex items-center gap-3 mb-2">
+        <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style="background:#f0fdf4;border:1.5px solid #bbf7d0;">
+          {% icon "bell" size="20" color="#059669" %}
+        </div>
+        <div>
+          <h1 class="text-xl font-bold" style="color:#0f172a;">Verifica tu correo</h1>
+          <p class="text-xs" style="color:#64748b;">Código enviado a <strong>{{ email }}</strong></p>
+        </div>
+      </div>
+
+      <p class="text-sm mb-6 mt-2" style="color:#64748b;">
+        Revisa tu bandeja de entrada (y la carpeta de spam) e ingresa el código de 6 dígitos.
+      </p>
+
+      {% if error %}
+      <div class="mb-4 px-4 py-3 rounded-lg text-sm flex items-center gap-2" style="background:#fef2f2;border:1px solid #fecaca;color:#dc2626;">
+        {% icon "x-circle" size="16" color="#dc2626" %} {{ error }}
+      </div>
+      {% endif %}
+
+      {% if not expirado %}
+      <!-- Formulario de código -->
+      <form method="post" x-data="{ code: '' }">
+        {% csrf_token %}
+        <input type="hidden" name="accion" value="verificar">
+
+        <label class="block text-sm font-medium mb-2" style="color:#374151;">Código de verificación</label>
+
+        <!-- Inputs individuales por dígito -->
+        <div class="flex gap-3 mb-6 justify-center" x-data="{
+          digits: ['','','','','',''],
+          get full() { return this.digits.join('') },
+          focus(idx, el) {
+            if (idx < 5 && el.value) {
+              el.closest('.flex').children[idx+1].querySelector('input').focus();
+            }
+          },
+          paste(e) {
+            let v = e.clipboardData.getData('text').replace(/\D/g,'').slice(0,6);
+            for(let i=0;i<6;i++) this.digits[i] = v[i] || '';
+            this.$nextTick(() => {
+              let inputs = this.$el.querySelectorAll('input[data-digit]');
+              let last = v.length < 6 ? v.length : 5;
+              inputs[last].focus();
+            });
+          }
+        }" @paste.window="paste($event)">
+          <template x-for="(d, i) in digits" :key="i">
+            <div>
+              <input type="text" data-digit
+                     inputmode="numeric" maxlength="1"
+                     x-model="digits[i]"
+                     @input="focus(i, $event.target)"
+                     @keydown.backspace="if(!digits[i] && i>0) { digits[i-1]=''; $event.target.closest('.flex').children[i-1].querySelector('input').focus() }"
+                     class="w-11 h-14 text-center text-2xl font-bold rounded-xl outline-none transition-all"
+                     style="border:2px solid #e2e8f0;background:#f8fafc;color:#0f172a;"
+                     onfocus="this.style.borderColor='#122938';this.style.background='#fff'"
+                     onblur="this.style.borderColor='#e2e8f0';this.style.background='#f8fafc'">
+            </div>
+          </template>
+          <input type="hidden" name="codigo" :value="full">
+        </div>
+
+        <button type="submit"
+                class="w-full py-2.5 rounded-lg text-sm font-semibold text-white"
+                style="background:#122938;"
+                onmouseover="this.style.background='#0d1e2e'"
+                onmouseout="this.style.background='#122938'">
+          Verificar cuenta
+        </button>
+      </form>
+      {% else %}
+      <div class="mb-4 px-4 py-3 rounded-lg text-sm flex items-center gap-2" style="background:#fef9ec;border:1px solid #fde68a;color:#92400e;">
+        {% icon "warning" size="16" color="#d97706" %} El código ha expirado. Solicita uno nuevo.
+      </div>
+      {% endif %}
+
+      <!-- Reenviar código -->
+      <div class="mt-5 pt-4" style="border-top:1px solid #f1f5f9;">
+        <p class="text-sm text-center mb-3" style="color:#64748b;">¿No recibiste el correo?</p>
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="accion" value="reenviar">
+          <button type="submit"
+                  class="w-full py-2 rounded-lg text-sm font-medium"
+                  style="border:1.5px solid #e2e8f0;color:#374151;background:#f8fafc;"
+                  onmouseover="this.style.background='#f1f5f9'"
+                  onmouseout="this.style.background='#f8fafc'">
+            {% icon "refresh" size="14" color="#64748b" %} Reenviar código
+          </button>
+        </form>
+      </div>
+
+      <p class="text-center text-xs mt-4" style="color:#94a3b8;">
+        ¿Correo incorrecto? <a href="/registro/" style="color:#2563eb;">Vuelve al registro</a>
+      </p>
+
+    </div>
+  </div>
+
+</body>
+</html>
