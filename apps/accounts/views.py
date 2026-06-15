@@ -49,15 +49,7 @@ def login_view(request):
         if user:
             login(request, user)
             return _redirect_by_role(user)
-        # Verificar si el correo existe pero la cuenta no está activada
-        try:
-            u = CustomUser.objects.get(email=form.cleaned_data['email'])
-            if not u.is_active:
-                error = 'Tu cuenta no ha sido verificada. Revisa tu correo o solicita un nuevo código.'
-            else:
-                error = 'Credenciales incorrectas. Verifica tu correo y contraseña.'
-        except CustomUser.DoesNotExist:
-            error = 'Credenciales incorrectas. Verifica tu correo y contraseña.'
+        error = 'Credenciales incorrectas. Verifica tu correo y contraseña.'
     return render(request, 'accounts/login.html', {'form': form, 'error': error})
 
 
@@ -72,16 +64,9 @@ def registro_view(request):
     if request.method == 'POST' and form.is_valid():
         user = form.save(commit=False)
         user.rol = CustomUser.USUARIO
-        user.is_active = False  # Inactivo hasta verificar email
         user.save()
-        try:
-            verificacion = EmailVerification.crear_para(user)
-            _enviar_codigo(user, verificacion)
-            request.session['verificar_user_id'] = user.pk
-            return redirect('/verificar-correo/')
-        except Exception as e:
-            user.delete()
-            form.add_error(None, f'No se pudo enviar el correo de verificación. Verifica la configuración de email. ({e})')
+        messages.success(request, 'Cuenta creada. Inicia sesión para continuar.')
+        return redirect('/login/')
     return render(request, 'accounts/registro.html', {'form': form})
 
 
