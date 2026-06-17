@@ -36,11 +36,6 @@
       <h1 class="text-2xl font-bold mb-1" style="color:#0f172a">Crear cuenta</h1>
       <p class="text-sm mb-4" style="color:#64748b">Completa los datos para registrarte</p>
 
-      <!-- Info banner -->
-      <div class="mb-5 px-4 py-3 rounded-lg text-sm flex items-center gap-2" style="background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;">
-        {% icon "info" size="16" color="#1d4ed8" %} Tu cuenta iniciará con rol <strong>Usuario</strong>. Un administrador puede cambiar tu rol si es necesario.
-      </div>
-
       {% if form.errors %}
       <div class="mb-4 px-4 py-3 rounded-lg text-sm" style="background:#fef2f2;border:1px solid #fecaca;color:#dc2626;">
         {% for field in form %}{% for error in field.errors %}<div>{{ error }}</div>{% endfor %}{% endfor %}
