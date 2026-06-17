@@ -4,7 +4,7 @@
 {% block nav_te_rep %}active{% endblock %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto px-6 py-6">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
 
   <a href="/reportes/" class="inline-flex items-center gap-1 text-sm mb-5"
      style="color:#64748b;" onmouseover="this.style.color='#0f172a'" onmouseout="this.style.color='#64748b'">
@@ -12,7 +12,7 @@
   </a>
 
   <!-- Header -->
-  <div class="flex items-start justify-between mb-6 gap-4">
+  <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-6 gap-4">
     <div>
       <div class="flex gap-2 mb-2 flex-wrap">
         <span class="text-xs font-mono px-2 py-0.5 rounded" style="background:#f1f5f9;color:#64748b;">#{{ reporte.pk }}</span>
@@ -51,7 +51,7 @@
     </div>
   </div>
 
-  <div class="grid gap-5" style="grid-template-columns:1.4fr 1fr;">
+  <div class="grid gap-5 grid-cols-1 lg:grid-cols-[1.4fr_1fr]">
 
     <!-- Columna izquierda -->
     <div class="flex flex-col gap-4">

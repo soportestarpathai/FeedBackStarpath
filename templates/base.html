@@ -24,6 +24,19 @@
       background: rgba(29,225,176,0.12);
       color: #1de1b0;
     }
+    .nav-link-mobile {
+      display: block;
+      color: #94a3b8;
+      font-size: 15px;
+      padding: 12px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.15s, color 0.15s;
+    }
+    .nav-link-mobile:hover, .nav-link-mobile.active {
+      background: rgba(29,225,176,0.12);
+      color: #1de1b0;
+    }
     .toast-enter { animation: slideIn 0.3s ease-out; }
     @keyframes slideIn {
       from { transform: translateX(120%); opacity: 0; }
@@ -36,70 +49,142 @@
 
   <!-- ═══ NAVBAR ═══ -->
   {% if user.is_authenticated %}
-  <nav style="background:#122938; height:60px;" class="sticky top-0 z-50 flex items-center px-6 shadow-lg flex-shrink-0">
+  <div x-data="{ mobileOpen: false }">
+  <nav style="background:#122938; height:60px;" class="sticky top-0 z-50 flex items-center px-4 sm:px-6 shadow-lg flex-shrink-0">
 
     <!-- Logo -->
-    <a href="/" class="flex items-center gap-2 mr-8 flex-shrink-0 no-underline">
+    <a href="/" class="flex items-center gap-2 mr-4 sm:mr-8 flex-shrink-0 no-underline">
       <img src="{% static 'img/logo.jpg' %}" alt="Starpath" class="h-8 w-8 rounded object-contain" style="background:#fff;padding:2px;">
-      <span class="font-bold text-base tracking-tight" style="color:#fff;">FeedBack<span style="color:#1de1b0;">Starpath</span></span>
+      <span class="font-bold text-sm sm:text-base tracking-tight" style="color:#fff;">FeedBack<span style="color:#1de1b0;">Starpath</span></span>
     </a>
 
-    <!-- Links -->
-    <div class="flex items-center gap-0.5 flex-1 overflow-x-auto">
+    <!-- Links desktop -->
+    <div class="hidden md:flex items-center gap-0.5 flex-1 overflow-x-auto">
       {% if user.rol == 'SUPERADMIN' %}
-        <a href="/superadmin/dashboard/" class="nav-link {% block nav_sa_dash %}{% endblock %}">Dashboard</a>
-        <a href="/superadmin/reportes/" class="nav-link {% block nav_sa_rep %}{% endblock %}">Reportes</a>
+        <a href="/superadmin/dashboard/"  class="nav-link {% block nav_sa_dash %}{% endblock %}">Dashboard</a>
+        <a href="/superadmin/reportes/"   class="nav-link {% block nav_sa_rep %}{% endblock %}">Reportes</a>
         <a href="/superadmin/plataformas/" class="nav-link {% block nav_sa_plat %}{% endblock %}">Plataformas</a>
-        <a href="/superadmin/admins/" class="nav-link {% block nav_sa_admins %}{% endblock %}">Administradores</a>
-        <a href="/superadmin/config/" class="nav-link {% block nav_sa_config %}{% endblock %}">Config Global</a>
+        <a href="/superadmin/admins/"     class="nav-link {% block nav_sa_admins %}{% endblock %}">Administradores</a>
+        <a href="/superadmin/config/"     class="nav-link {% block nav_sa_config %}{% endblock %}">Config</a>
       {% elif user.rol == 'ADMIN' %}
-        <a href="/admin/resumen/" class="nav-link {% block nav_ad_res %}{% endblock %}">Resumen</a>
+        <a href="/admin/resumen/"  class="nav-link {% block nav_ad_res %}{% endblock %}">Resumen</a>
         <a href="/admin/reportes/" class="nav-link {% block nav_ad_rep %}{% endblock %}">Reportes</a>
         <a href="/admin/usuarios/" class="nav-link {% block nav_ad_users %}{% endblock %}">Usuarios</a>
-        <a href="/admin/pdf/" class="nav-link {% block nav_ad_pdf %}{% endblock %}">Exportar PDF</a>
+        <a href="/admin/pdf/"      class="nav-link {% block nav_ad_pdf %}{% endblock %}">Exportar PDF</a>
       {% elif user.rol == 'TESTER' %}
-        <a href="/reportes/" class="nav-link {% block nav_te_rep %}{% endblock %}">Mis Reportes</a>
-        <a href="/reportes/nuevo/" class="nav-link {% block nav_te_new %}{% endblock %}">Nuevo Reporte</a>
+        <a href="/reportes/"          class="nav-link {% block nav_te_rep %}{% endblock %}">Mis Reportes</a>
+        <a href="/reportes/nuevo/"    class="nav-link {% block nav_te_new %}{% endblock %}">Nuevo Reporte</a>
         <a href="/tester/plataformas/" class="nav-link {% block nav_te_plat %}{% endblock %}">Mis Plataformas</a>
       {% else %}
-        <a href="/reportes/" class="nav-link {% block nav_us_rep %}{% endblock %}">Mis Reportes</a>
+        <a href="/reportes/"       class="nav-link {% block nav_us_rep %}{% endblock %}">Mis Reportes</a>
         <a href="/reportes/nuevo/" class="nav-link {% block nav_us_new %}{% endblock %}">Nuevo Reporte</a>
       {% endif %}
     </div>
 
-    <!-- Right: user info -->
-    <div class="flex items-center gap-3 flex-shrink-0 ml-4">
-      <span class="text-sm hidden sm:block" style="color:#7a9ab5;">{{ user.email }}</span>
-
+    <!-- Right desktop -->
+    <div class="hidden md:flex items-center gap-3 flex-shrink-0 ml-4">
+      <span class="text-sm hidden lg:block" style="color:#7a9ab5;">{{ user.email }}</span>
       {% if user.rol == 'SUPERADMIN' %}
-        <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full text-white flex-shrink-0" style="background:rgba(29,225,176,0.2);color:#1de1b0;border:1px solid rgba(29,225,176,0.4);">SuperAdmin</span>
+        <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full" style="background:rgba(29,225,176,0.2);color:#1de1b0;border:1px solid rgba(29,225,176,0.4);">SuperAdmin</span>
       {% elif user.rol == 'ADMIN' %}
-        <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full flex-shrink-0" style="background:rgba(29,225,176,0.15);color:#1de1b0;border:1px solid rgba(29,225,176,0.3);">Admin</span>
+        <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full" style="background:rgba(29,225,176,0.15);color:#1de1b0;border:1px solid rgba(29,225,176,0.3);">Admin</span>
       {% elif user.rol == 'TESTER' %}
-        <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full flex-shrink-0" style="background:rgba(29,225,176,0.1);color:#1de1b0;">Tester</span>
+        <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full" style="background:rgba(29,225,176,0.1);color:#1de1b0;">Tester</span>
       {% else %}
-        <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full text-white flex-shrink-0" style="background:#334155;">Usuario</span>
+        <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full text-white" style="background:#334155;">Usuario</span>
       {% endif %}
-
-      <!-- Avatar -->
       <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
-           style="{% if user.rol == 'SUPERADMIN' %}background:#1de1b0;color:#122938{% elif user.rol == 'ADMIN' %}background:#1de1b0;color:#122938{% elif user.rol == 'TESTER' %}background:#1de1b0;color:#122938{% else %}background:#334155;color:#fff{% endif %}">
+           style="{% if user.rol == 'USUARIO' %}background:#334155;color:#fff{% else %}background:#1de1b0;color:#122938{% endif %}">
         {% if user.first_name %}{{ user.first_name.0|upper }}{% if user.last_name %}{{ user.last_name.0|upper }}{% endif %}{% else %}{{ user.email.0|upper }}{% endif %}
       </div>
-
-      <!-- Logout -->
       <form method="post" action="/logout/">
         {% csrf_token %}
-        <button type="submit"
-                class="text-xs px-3 py-1.5 rounded-md flex-shrink-0"
-                style="color:#7a9ab5; border:1px solid #1e3a50; background:transparent; cursor:pointer;"
+        <button type="submit" class="text-xs px-3 py-1.5 rounded-md flex-shrink-0"
+                style="color:#7a9ab5;border:1px solid #1e3a50;background:transparent;cursor:pointer;"
                 onmouseover="this.style.color='#1de1b0';this.style.borderColor='#1de1b0'"
-                onmouseout="this.style.color='#7a9ab5';this.style.borderColor='#1e3a50'">
-          Salir
-        </button>
+                onmouseout="this.style.color='#7a9ab5';this.style.borderColor='#1e3a50'">Salir</button>
       </form>
     </div>
+
+    <!-- Right mobile: avatar + hamburger -->
+    <div class="flex md:hidden items-center gap-2 ml-auto flex-shrink-0">
+      <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
+           style="{% if user.rol == 'USUARIO' %}background:#334155;color:#fff{% else %}background:#1de1b0;color:#122938{% endif %}">
+        {% if user.first_name %}{{ user.first_name.0|upper }}{% if user.last_name %}{{ user.last_name.0|upper }}{% endif %}{% else %}{{ user.email.0|upper }}{% endif %}
+      </div>
+      <button @click="mobileOpen = !mobileOpen" class="p-2 rounded-lg" style="color:#7a9ab5;" aria-label="Menú">
+        <svg x-show="!mobileOpen" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+        <svg x-show="mobileOpen" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:none;">
+          <path d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
   </nav>
+
+  <!-- Menú móvil -->
+  <div x-show="mobileOpen"
+       x-transition:enter="transition ease-out duration-150"
+       x-transition:enter-start="opacity-0 -translate-y-2"
+       x-transition:enter-end="opacity-100 translate-y-0"
+       x-transition:leave="transition ease-in duration-100"
+       x-transition:leave-start="opacity-100 translate-y-0"
+       x-transition:leave-end="opacity-0 -translate-y-2"
+       class="md:hidden sticky top-[60px] z-40 shadow-xl"
+       style="background:#122938;display:none;"
+       @click.outside="mobileOpen = false">
+    <div class="px-4 py-3 flex flex-col gap-1">
+      <!-- Info usuario -->
+      <div class="px-4 py-3 mb-2 rounded-lg" style="background:rgba(255,255,255,0.05);">
+        <div class="text-sm font-medium" style="color:#e2e8f0;">{{ user.get_full_name|default:user.email }}</div>
+        <div class="text-xs mt-0.5" style="color:#64748b;">{{ user.email }}</div>
+        <div class="mt-1.5">
+          {% if user.rol == 'SUPERADMIN' %}
+            <span class="text-xs font-semibold px-2 py-0.5 rounded-full" style="background:rgba(29,225,176,0.2);color:#1de1b0;">SuperAdmin</span>
+          {% elif user.rol == 'ADMIN' %}
+            <span class="text-xs font-semibold px-2 py-0.5 rounded-full" style="background:rgba(29,225,176,0.15);color:#1de1b0;">Admin</span>
+          {% elif user.rol == 'TESTER' %}
+            <span class="text-xs font-semibold px-2 py-0.5 rounded-full" style="background:rgba(29,225,176,0.1);color:#1de1b0;">Tester</span>
+          {% else %}
+            <span class="text-xs font-semibold px-2 py-0.5 rounded-full text-white" style="background:#334155;">Usuario</span>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Links -->
+      {% if user.rol == 'SUPERADMIN' %}
+        <a href="/superadmin/dashboard/"   @click="mobileOpen=false" class="nav-link-mobile {% block mob_sa_dash %}{% endblock %}">Dashboard</a>
+        <a href="/superadmin/reportes/"    @click="mobileOpen=false" class="nav-link-mobile {% block mob_sa_rep %}{% endblock %}">Reportes</a>
+        <a href="/superadmin/plataformas/" @click="mobileOpen=false" class="nav-link-mobile {% block mob_sa_plat %}{% endblock %}">Plataformas</a>
+        <a href="/superadmin/admins/"      @click="mobileOpen=false" class="nav-link-mobile {% block mob_sa_admins %}{% endblock %}">Administradores</a>
+        <a href="/superadmin/config/"      @click="mobileOpen=false" class="nav-link-mobile {% block mob_sa_config %}{% endblock %}">Config Global</a>
+      {% elif user.rol == 'ADMIN' %}
+        <a href="/admin/resumen/"  @click="mobileOpen=false" class="nav-link-mobile {% block mob_ad_res %}{% endblock %}">Resumen</a>
+        <a href="/admin/reportes/" @click="mobileOpen=false" class="nav-link-mobile {% block mob_ad_rep %}{% endblock %}">Reportes</a>
+        <a href="/admin/usuarios/" @click="mobileOpen=false" class="nav-link-mobile {% block mob_ad_users %}{% endblock %}">Usuarios</a>
+        <a href="/admin/pdf/"      @click="mobileOpen=false" class="nav-link-mobile {% block mob_ad_pdf %}{% endblock %}">Exportar PDF</a>
+      {% elif user.rol == 'TESTER' %}
+        <a href="/reportes/"           @click="mobileOpen=false" class="nav-link-mobile {% block mob_te_rep %}{% endblock %}">Mis Reportes</a>
+        <a href="/reportes/nuevo/"     @click="mobileOpen=false" class="nav-link-mobile {% block mob_te_new %}{% endblock %}">Nuevo Reporte</a>
+        <a href="/tester/plataformas/" @click="mobileOpen=false" class="nav-link-mobile {% block mob_te_plat %}{% endblock %}">Mis Plataformas</a>
+      {% else %}
+        <a href="/reportes/"       @click="mobileOpen=false" class="nav-link-mobile {% block mob_us_rep %}{% endblock %}">Mis Reportes</a>
+        <a href="/reportes/nuevo/" @click="mobileOpen=false" class="nav-link-mobile {% block mob_us_new %}{% endblock %}">Nuevo Reporte</a>
+      {% endif %}
+
+      <!-- Logout -->
+      <div class="mt-2 pt-2" style="border-top:1px solid rgba(255,255,255,0.07);">
+        <form method="post" action="/logout/">
+          {% csrf_token %}
+          <button type="submit" class="w-full text-left nav-link-mobile" style="color:#dc2626;background:none;border:none;cursor:pointer;">
+            Cerrar sesión
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+  </div><!-- end alpine -->
   {% endif %}
 
   <!-- ═══ CONTENT ═══ -->
@@ -108,8 +193,8 @@
   </main>
 
   <!-- ═══ FOOTER ═══ -->
-  <footer class="py-3 px-6 flex justify-between items-center flex-shrink-0"
-          style="border-top:1px solid #e2e8f0; background:#fff; font-size:12px; color:#94a3b8;">
+  <footer class="py-3 px-4 sm:px-6 flex flex-col sm:flex-row justify-between items-center gap-2 flex-shrink-0"
+          style="border-top:1px solid #e2e8f0;background:#fff;font-size:12px;color:#94a3b8;">
     <span>FeedBackStarpath © 2024 · Sistema de gestión de incidencias Starpath</span>
     <div class="flex gap-4">
       <a href="#" style="color:#94a3b8;">Términos</a>
@@ -120,25 +205,20 @@
 
   <!-- ═══ TOASTS ═══ -->
   {% if messages %}
-  <div class="fixed bottom-5 right-5 z-50 flex flex-col gap-2" x-data="{
+  <div class="fixed bottom-4 right-4 left-4 sm:left-auto z-50 flex flex-col gap-2" x-data="{
     toasts: [{% for m in messages %}{ id: {{ forloop.counter }}, tag: '{{ m.tags }}', text: '{{ m|escapejs }}' }{% if not forloop.last %},{% endif %}{% endfor %}],
     init() { this.toasts.forEach(t => setTimeout(() => this.remove(t.id), 4000)); },
     remove(id) { this.toasts = this.toasts.filter(t => t.id !== id); }
   }">
     <template x-for="toast in toasts" :key="toast.id">
       <div class="toast-enter flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg text-sm font-medium text-white"
-           style="min-width:260px; max-width:360px;"
-           :style="{
-             background: toast.tag.includes('success') ? '#16a34a'
-                       : toast.tag.includes('error')   ? '#dc2626'
-                       : toast.tag.includes('warning')  ? '#d97706'
-                       : '#122938'
-           }">
+           style="min-width:0;max-width:420px;"
+           :style="{ background: toast.tag.includes('success') ? '#16a34a' : toast.tag.includes('error') ? '#dc2626' : toast.tag.includes('warning') ? '#d97706' : '#122938' }">
         <span x-show="toast.tag.includes('success')" style="display:none;">{% icon "check-circle" size="16" %}</span>
         <span x-show="toast.tag.includes('error')" style="display:none;">{% icon "x-circle" size="16" %}</span>
         <span x-show="!toast.tag.includes('success') && !toast.tag.includes('error')" style="display:none;">{% icon "info" size="16" %}</span>
         <span x-text="toast.text" class="flex-1"></span>
-        <button @click="remove(toast.id)" class="opacity-70 hover:opacity-100 text-base leading-none">×</button>
+        <button @click="remove(toast.id)" class="opacity-70 hover:opacity-100 text-base leading-none flex-shrink-0">×</button>
       </div>
     </template>
   </div>

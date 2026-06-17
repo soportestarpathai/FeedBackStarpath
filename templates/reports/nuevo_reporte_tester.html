@@ -3,9 +3,9 @@
 {% block title %}Nuevo Reporte — FeedBackStarpath{% endblock %}
 {% block nav_te_new %}active{% endblock %}
 {% block content %}
-<div class="max-w-7xl mx-auto px-6 py-6">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
 
-  <div class="flex items-center justify-between mb-5">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-5 gap-3">
     <div>
       <h1 class="text-xl font-bold" style="color:#0f172a;">Nuevo Reporte</h1>
       <p class="text-sm mt-0.5" style="color:#64748b;">Formulario técnico completo</p>
@@ -15,7 +15,7 @@
 
   <div class="mb-4 px-4 py-2.5 rounded-lg text-sm flex items-center gap-2"
        style="background:#ecfdf5;border:1px solid #6ee7b7;color:#065f46;">
-    ℹ Como Tester tienes acceso a los campos técnicos. Severidad máxima: <strong>Alta</strong>.
+    Como Tester tienes acceso a los campos técnicos. Severidad máxima: <strong>Alta</strong>.
   </div>
 
   <form method="post" enctype="multipart/form-data"
@@ -29,7 +29,7 @@
         }">
     {% csrf_token %}
 
-    <div class="grid gap-5" style="grid-template-columns:2fr 1fr;">
+    <div class="grid gap-5 grid-cols-1 lg:grid-cols-[2fr_1fr]">
 
       <!-- Columna izquierda -->
       <div class="flex flex-col gap-4">
@@ -45,7 +45,7 @@
                      style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#0f172a;"
                      onfocus="this.style.borderColor='#2563eb'" onblur="this.style.borderColor='#e2e8f0'">
             </div>
-            <div class="grid grid-cols-3 gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
                 <label class="block text-xs font-medium mb-1.5" style="color:#374151;">Plataforma *</label>
                 <select name="plataforma" required class="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
