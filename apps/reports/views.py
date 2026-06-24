@@ -126,11 +126,17 @@ def nuevo_reporte_tester(request):
                 Screenshot.objects.create(reporte=reporte, imagen=img)
             return redirect(f'/reportes/{reporte.pk}/')
 
-    return render(request, 'reports/nuevo_reporte_tester.html', {
+    if request.user.rol == CustomUser.USUARIO:
+        return render(request, 'reports/nuevo_reporte_usuario.html', {
         'plataformas':  plataformas,
         'tipo_choices': Report.TIPO_CHOICES,
         'sev_choices':  [(k, v) for k, v in Report.SEV_CHOICES if k != Report.CRITICA],
     })
+    return render(request, 'reports/nuevo_reporte_tester.html', {
+    'plataformas':  plataformas,
+    'tipo_choices': Report.TIPO_CHOICES,
+    'sev_choices':  [(k, v) for k, v in Report.SEV_CHOICES if k != Report.CRITICA],
+})
 
 
 @login_required

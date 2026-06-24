@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Nuevo Reporte · FeedBackStarpath{% endblock %}
+
+{% block nav_us_new %}active{% endblock %}
+{% block mob_us_new %}active{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 py-8">
+
+  <!-- Header -->
+  <div class="mb-6">
+    <h1 class="text-xl font-semibold" style="color:#122938;">Nuevo Reporte</h1>
+    <p class="text-sm mt-1" style="color:#64748b;">Completa los campos para enviar tu reporte al equipo.</p>
+  </div>
+
+  <!-- Card -->
+  <div class="rounded-xl shadow-sm p-6 sm:p-8" style="background:#fff;border:1px solid #e2e8f0;">
+    <form method="post" class="space-y-5">
+      {% csrf_token %}
+
+      <!-- Título -->
+      <div>
+        <label for="titulo" class="block text-sm font-medium mb-1" style="color:#374151;">
+          Título <span style="color:#ef4444;">*</span>
+        </label>
+        <input
+          type="text"
+          id="titulo"
+          name="titulo"
+          required
+          maxlength="255"
+          placeholder="Describe brevemente el problema"
+          class="w-full rounded-lg px-3 py-2 text-sm outline-none transition"
+          style="border:1px solid #d1d5db;color:#111827;"
+          onfocus="this.style.borderColor='#1de1b0';this.style.boxShadow='0 0 0 3px rgba(29,225,176,0.15)'"
+          onblur="this.style.borderColor='#d1d5db';this.style.boxShadow='none'"
+        >
+      </div>
+
+      <!-- Plataforma -->
+      <div>
+        <label for="plataforma" class="block text-sm font-medium mb-1" style="color:#374151;">
+          Plataforma <span style="color:#ef4444;">*</span>
+        </label>
+        <select
+          id="plataforma"
+          name="plataforma"
+          required
+          class="w-full rounded-lg px-3 py-2 text-sm outline-none transition"
+          style="border:1px solid #d1d5db;color:#111827;"
+          onfocus="this.style.borderColor='#1de1b0';this.style.boxShadow='0 0 0 3px rgba(29,225,176,0.15)'"
+          onblur="this.style.borderColor='#d1d5db';this.style.boxShadow='none'"
+        >
+          <option value="">— Selecciona una plataforma —</option>
+          {% for p in plataformas %}
+            <option value="{{ p.id }}">{{ p.nombre }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Tipo + Severidad en fila -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label for="tipo" class="block text-sm font-medium mb-1" style="color:#374151;">Tipo</label>
+          <select
+            id="tipo"
+            name="tipo"
+            class="w-full rounded-lg px-3 py-2 text-sm outline-none transition"
+            style="border:1px solid #d1d5db;color:#111827;"
+            onfocus="this.style.borderColor='#1de1b0';this.style.boxShadow='0 0 0 3px rgba(29,225,176,0.15)'"
+            onblur="this.style.borderColor='#d1d5db';this.style.boxShadow='none'"
+          >
+            {% for value, label in tipo_choices %}
+              <option value="{{ value }}">{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div>
+          <label for="severidad" class="block text-sm font-medium mb-1" style="color:#374151;">Severidad</label>
+          <select
+            id="severidad"
+            name="severidad"
+            class="w-full rounded-lg px-3 py-2 text-sm outline-none transition"
+            style="border:1px solid #d1d5db;color:#111827;"
+            onfocus="this.style.borderColor='#1de1b0';this.style.boxShadow='0 0 0 3px rgba(29,225,176,0.15)'"
+            onblur="this.style.borderColor='#d1d5db';this.style.boxShadow='none'"
+          >
+            {% for value, label in sev_choices %}
+              <option value="{{ value }}">{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <!-- Descripción -->
+      <div>
+        <label for="descripcion" class="block text-sm font-medium mb-1" style="color:#374151;">Descripción</label>
+        <textarea
+          id="descripcion"
+          name="descripcion"
+          rows="5"
+          placeholder="Explica qué ocurrió. Si puedes, incluye los pasos para reproducirlo."
+          class="w-full rounded-lg px-3 py-2 text-sm outline-none transition resize-y"
+          style="border:1px solid #d1d5db;color:#111827;"
+          onfocus="this.style.borderColor='#1de1b0';this.style.boxShadow='0 0 0 3px rgba(29,225,176,0.15)'"
+          onblur="this.style.borderColor='#d1d5db';this.style.boxShadow='none'"
+        ></textarea>
+      </div>
+
+      <!-- Acciones -->
+      <div class="flex items-center gap-3 pt-1">
+        <button
+          type="submit"
+          class="px-5 py-2 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90"
+          style="background:#1de1b0;color:#122938;"
+        >
+          Enviar reporte
+        </button>
+        <a
+          href="/reportes/"
+          class="text-sm"
+          style="color:#64748b;"
+          onmouseover="this.style.color='#122938'"
+          onmouseout="this.style.color='#64748b'"
+        >
+          Cancelar
+        </a>
+      </div>
+
+    </form>
+  </div>
+</div>
+{% endblock %}
