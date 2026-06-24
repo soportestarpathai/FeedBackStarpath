@@ -257,7 +257,7 @@ def _qs_admin(request):
 @admin_required
 def resumen_admin(request):
     ids        = _plat_ids_admin(request)
-    plataforma = request.user.plataformas_asignadas.first()
+    plataformas = request.user.plataformas_asignadas.all()
 
     stats = {
         'total':     Report.objects.filter(plataforma_id__in=ids).count(),
@@ -267,7 +267,7 @@ def resumen_admin(request):
     }
     reportes_criticos = (
         Report.objects.filter(plataforma_id__in=ids, severidad=Report.CRITICA, estado=Report.ABIERTO)
-        .select_related('asignado_a')
+        .select_related('asignado_a', 'plataforma')
         .order_by('-creado_en')[:3]
     )
     actividad_reciente = (
@@ -278,11 +278,10 @@ def resumen_admin(request):
     info = {
         'testers':        CustomUser.objects.filter(plataformas_asignadas__in=ids, rol=CustomUser.TESTER).distinct().count(),
         'usuarios':       CustomUser.objects.filter(plataformas_asignadas__in=ids, rol=CustomUser.USUARIO).distinct().count(),
-        'total_reportes': Report.objects.filter(plataforma_id__in=ids).count(),
         'criticos_sin':   Report.objects.filter(plataforma_id__in=ids, severidad=Report.CRITICA, estado=Report.ABIERTO, asignado_a__isnull=True).count(),
     }
     return render(request, 'reports/resumen_admin.html', {
-        'plataforma':        plataforma,
+        'plataformas':       plataformas,
         'stats':             stats,
         'reportes_criticos': reportes_criticos,
         'actividad_reciente':actividad_reciente,

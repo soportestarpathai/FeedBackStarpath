@@ -8,20 +8,19 @@
 
   <div class="mb-5">
     <h1 class="text-xl font-bold" style="color:#0f172a;">Resumen</h1>
-    {% if plataforma %}
-    <p class="text-sm mt-0.5" style="color:#64748b;">Plataforma: {{ plataforma.nombre }}</p>
-    {% endif %}
+    <div class="flex flex-wrap gap-1.5 mt-1">
+      {% for p in plataformas %}
+      <span class="inline-flex items-center gap-1.5 text-xs font-medium px-2 py-0.5 rounded-full"
+            style="background:#f1f5f9;color:#374151;">
+        <span class="w-2 h-2 rounded-full flex-shrink-0" style="background:{{ p.color }};"></span>
+        {{ p.nombre }}
+        {% if not p.activa %}<span style="color:#dc2626;">(inactiva)</span>{% endif %}
+      </span>
+      {% endfor %}
+    </div>
   </div>
 
-  {% if plataforma %}
-  <div class="mb-4 px-4 py-2.5 rounded-lg text-sm flex items-center gap-2"
-       style="background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;">
-    Gestionando: <strong>{{ plataforma.nombre }}</strong>
-    {% if not plataforma.activa %}<span class="ml-2 text-xs px-2 py-0.5 rounded-full" style="background:#fee2e2;color:#dc2626;">Inactiva</span>{% endif %}
-  </div>
-  {% endif %}
-
-  <!-- Stats -->
+  <!-- Stats (globales de todas las plataformas) -->
   <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
     <div class="bg-white rounded-xl p-4" style="border:1px solid #e2e8f0;">
       <div class="text-xs font-medium mb-1" style="color:#64748b;">Total reportes</div>
@@ -58,7 +57,12 @@
           <div class="flex items-start justify-between gap-2">
             <div>
               <div class="text-sm font-medium" style="color:#0f172a;">{{ r.titulo }}</div>
-              <div class="text-xs mt-0.5" style="color:#94a3b8;">#{{ r.pk }} · {{ r.creado_en|date:"d M Y" }}</div>
+              <div class="text-xs mt-0.5 flex items-center gap-2" style="color:#94a3b8;">
+                #{{ r.pk }} · {{ r.creado_en|date:"d M Y" }}
+                {% if r.plataforma %}
+                <span class="px-1.5 py-0.5 rounded" style="background:#eff6ff;color:#2563eb;">{{ r.plataforma.nombre }}</span>
+                {% endif %}
+              </div>
             </div>
             <div class="flex flex-col items-end gap-1 flex-shrink-0">
               {% badge_tipo r.tipo %}
@@ -81,30 +85,32 @@
     <!-- Derecha -->
     <div class="flex flex-col gap-4">
 
-      <!-- Info plataforma -->
-      {% if plataforma %}
+      <!-- Info plataformas -->
       <div class="bg-white rounded-xl p-5" style="border:1px solid #e2e8f0;">
-        <div class="flex items-center justify-between mb-3">
-          <h3 class="font-semibold text-sm" style="color:#0f172a;">Tu plataforma</h3>
-          {% if plataforma.activa %}
+        <h3 class="font-semibold text-sm mb-3" style="color:#0f172a;">
+          Tus plataformas <span class="font-normal text-xs ml-1" style="color:#94a3b8;">{{ plataformas|length }} en total</span>
+        </h3>
+        {% for p in plataformas %}
+        <div class="flex items-center justify-between py-2 {% if not forloop.last %}border-b{% endif %}" style="border-color:#f1f5f9;">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background:{{ p.color }};"></span>
+            <span class="text-sm font-medium" style="color:#0f172a;">{{ p.nombre }}</span>
+          </div>
+          {% if p.activa %}
           <span class="text-xs font-medium px-2 py-0.5 rounded-full" style="background:#d1fae5;color:#065f46;">Activa</span>
           {% else %}
           <span class="text-xs font-medium px-2 py-0.5 rounded-full" style="background:#fee2e2;color:#dc2626;">Inactiva</span>
           {% endif %}
         </div>
-        <div class="flex items-center gap-2 mb-3">
-          <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:{{ plataforma.color }};"></span>
-          <span class="font-semibold" style="color:#0f172a;">{{ plataforma.nombre }}</span>
-        </div>
-        <div class="flex flex-col divide-y" style="divide-color:#f1f5f9;">
+        {% empty %}
+        <p class="text-sm" style="color:#94a3b8;">Sin plataformas asignadas</p>
+        {% endfor %}
+        <div class="flex flex-col divide-y mt-3 pt-3" style="border-top:1px solid #f1f5f9;divide-color:#f1f5f9;">
           <div class="flex justify-between py-2 text-sm">
-            <span style="color:#64748b;">Testers</span><strong style="color:#0f172a;">{{ info.testers }}</strong>
+            <span style="color:#64748b;">Testers totales</span><strong style="color:#0f172a;">{{ info.testers }}</strong>
           </div>
           <div class="flex justify-between py-2 text-sm">
-            <span style="color:#64748b;">Usuarios</span><strong style="color:#0f172a;">{{ info.usuarios }}</strong>
-          </div>
-          <div class="flex justify-between py-2 text-sm">
-            <span style="color:#64748b;">Total reportes</span><strong style="color:#0f172a;">{{ info.total_reportes }}</strong>
+            <span style="color:#64748b;">Usuarios totales</span><strong style="color:#0f172a;">{{ info.usuarios }}</strong>
           </div>
           <div class="flex justify-between py-2 text-sm">
             <span style="color:#64748b;">Críticos sin asignar</span>
@@ -120,7 +126,6 @@
         </div>
         {% endif %}
       </div>
-      {% endif %}
 
       <!-- Actividad reciente -->
       <div class="bg-white rounded-xl p-5" style="border:1px solid #e2e8f0;">
