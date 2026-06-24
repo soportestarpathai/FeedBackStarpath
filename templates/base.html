@@ -65,6 +65,7 @@
         <a href="/superadmin/reportes/"   class="nav-link {% block nav_sa_rep %}{% endblock %}">Reportes</a>
         <a href="/superadmin/plataformas/" class="nav-link {% block nav_sa_plat %}{% endblock %}">Plataformas</a>
         <a href="/superadmin/admins/"     class="nav-link {% block nav_sa_admins %}{% endblock %}">Administradores</a>
+        <a href="/superadmin/usuarios/"   class="nav-link {% block nav_sa_users %}{% endblock %}">Usuarios</a>
         <a href="/superadmin/config/"     class="nav-link {% block nav_sa_config %}{% endblock %}">Config</a>
       {% elif user.rol == 'ADMIN' %}
         <a href="/admin/resumen/"  class="nav-link {% block nav_ad_res %}{% endblock %}">Resumen</a>
@@ -158,6 +159,7 @@
         <a href="/superadmin/reportes/"    @click="mobileOpen=false" class="nav-link-mobile {% block mob_sa_rep %}{% endblock %}">Reportes</a>
         <a href="/superadmin/plataformas/" @click="mobileOpen=false" class="nav-link-mobile {% block mob_sa_plat %}{% endblock %}">Plataformas</a>
         <a href="/superadmin/admins/"      @click="mobileOpen=false" class="nav-link-mobile {% block mob_sa_admins %}{% endblock %}">Administradores</a>
+        <a href="/superadmin/usuarios/"    @click="mobileOpen=false" class="nav-link-mobile {% block mob_sa_users %}{% endblock %}">Usuarios</a>
         <a href="/superadmin/config/"      @click="mobileOpen=false" class="nav-link-mobile {% block mob_sa_config %}{% endblock %}">Config Global</a>
       {% elif user.rol == 'ADMIN' %}
         <a href="/admin/resumen/"  @click="mobileOpen=false" class="nav-link-mobile {% block mob_ad_res %}{% endblock %}">Resumen</a>

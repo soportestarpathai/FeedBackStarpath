@@ -184,3 +184,39 @@ def revocar_admin(request, pk):
 @superadmin_required
 def config_global(request):
     return render(request, 'superadmin/config_global.html')
+
+
+@superadmin_required
+def lista_usuarios_sa(request):
+    qs = CustomUser.objects.filter(
+        rol__in=[CustomUser.USUARIO, CustomUser.TESTER]
+    ).prefetch_related('plataformas_asignadas').order_by('rol', 'email')
+
+    q           = request.GET.get('q', '').strip()
+    plataforma  = request.GET.get('plataforma', '')
+    sin_plat    = request.GET.get('sin_plataforma', '')
+
+    if q:
+        qs = qs.filter(email__icontains=q)
+    if plataforma:
+        qs = qs.filter(plataformas_asignadas__pk=plataforma)
+    if sin_plat:
+        qs = qs.filter(plataformas_asignadas__isnull=True)
+
+    return render(request, 'superadmin/usuarios_sa.html', {
+        'usuarios':    qs,
+        'plataformas': Platform.objects.filter(activa=True),
+    })
+
+
+@superadmin_required
+@require_POST
+def asignar_plataforma_sa(request, pk):
+    user  = get_object_or_404(CustomUser, pk=pk, rol__in=[CustomUser.USUARIO, CustomUser.TESTER])
+    plats = request.POST.getlist('plataformas')
+    nuevas = Platform.objects.filter(pk__in=[p for p in plats if p.isdigit()])
+    user.plataformas_asignadas.set(nuevas)
+    return render(request, 'partials/fila_usuario_sa.html', {
+        'u':           user,
+        'plataformas': Platform.objects.filter(activa=True),
+    })

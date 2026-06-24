@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load icons %}
+{% block title %}Usuarios — FeedBackStarpath{% endblock %}
+{% block nav_sa_users %}active{% endblock %}
+{% block mob_sa_users %}active{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-5 gap-3">
+    <div>
+      <h1 class="text-xl font-bold" style="color:#0f172a;">Usuarios del sistema</h1>
+      <p class="text-sm mt-0.5" style="color:#64748b;">Asigna plataformas a usuarios y testers</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="text-xs font-medium px-2.5 py-1 rounded-full" style="background:#f1f5f9;color:#64748b;">
+        {{ usuarios|length }} usuario{{ usuarios|length|pluralize }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="bg-white rounded-xl p-4 mb-4 flex flex-wrap gap-3 items-center" style="border:1px solid #e2e8f0;">
+    <form method="get" class="flex flex-wrap gap-3 items-center w-full">
+
+      <div class="flex items-center gap-2 flex-1 min-w-48" style="border:1.5px solid #e2e8f0;border-radius:8px;padding:0 10px;background:#f8fafc;">
+        <svg width="14" height="14" fill="none" stroke="#94a3b8" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" name="q" placeholder="Buscar por correo..." value="{{ request.GET.q }}"
+               class="flex-1 py-2 text-sm outline-none bg-transparent" style="color:#0f172a;"
+               onchange="this.form.submit()">
+      </div>
+
+      <select name="plataforma" onchange="this.form.submit()"
+              class="px-3 py-2 rounded-lg text-sm outline-none"
+              style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;">
+        <option value="">Todas las plataformas</option>
+        {% for p in plataformas %}
+          <option value="{{ p.pk }}" {% if request.GET.plataforma == p.pk|stringformat:"s" %}selected{% endif %}>{{ p.nombre }}</option>
+        {% endfor %}
+      </select>
+
+      <label class="flex items-center gap-2 text-sm cursor-pointer" style="color:#374151;">
+        <input type="checkbox" name="sin_plataforma" value="1"
+               {% if request.GET.sin_plataforma %}checked{% endif %}
+               onchange="this.form.submit()" class="accent-blue-600">
+        Solo sin plataforma
+      </label>
+
+      {% if request.GET.q or request.GET.plataforma or request.GET.sin_plataforma %}
+      <a href="/superadmin/usuarios/" class="text-xs" style="color:#94a3b8;">Limpiar filtros ×</a>
+      {% endif %}
+    </form>
+  </div>
+
+  <!-- Tabla -->
+  <div class="bg-white rounded-xl overflow-hidden" style="border:1px solid #e2e8f0;">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr style="border-bottom:1px solid #e2e8f0;background:#f8fafc;">
+            <th class="text-left px-4 py-3 text-xs font-semibold uppercase" style="color:#64748b;">Usuario</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold uppercase" style="color:#64748b;">Rol</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold uppercase" style="color:#64748b;">Plataformas</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold uppercase" style="color:#64748b;">Estado</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold uppercase" style="color:#64748b;">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in usuarios %}
+            {% include 'partials/fila_usuario_sa.html' %}
+          {% empty %}
+          <tr>
+            <td colspan="5" class="px-4 py-10 text-center">
+              <div class="flex flex-col items-center gap-2">
+                {% icon "users" size="32" color="#cbd5e1" %}
+                <p class="text-sm font-medium" style="color:#94a3b8;">No se encontraron usuarios</p>
+                {% if request.GET.sin_plataforma %}
+                <p class="text-xs" style="color:#cbd5e1;">Todos los usuarios tienen plataforma asignada</p>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="px-4 py-3" style="border-top:1px solid #e2e8f0;">
+      <span class="text-xs" style="color:#94a3b8;">{{ usuarios|length }} usuario{{ usuarios|length|pluralize }}</span>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
