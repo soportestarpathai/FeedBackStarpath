@@ -1,6 +1,8 @@
 {% load icons %}
-<tr id="fila-usu-sa-{{ u.pk }}" style="border-bottom:1px solid #f1f5f9;" class="hover:bg-slate-50"
-    x-data="{ editando: false }">
+<tbody id="fila-usu-sa-{{ u.pk }}" x-data="{ editando: false }">
+
+<!-- Fila principal -->
+<tr style="border-bottom:1px solid #f1f5f9;" class="hover:bg-slate-50">
 
   <!-- Usuario -->
   <td class="px-4 py-3">
@@ -44,7 +46,7 @@
     </span>
   </td>
 
-  <!-- Acciones -->
+  <!-- Botón -->
   <td class="px-4 py-3">
     <button @click="editando = !editando"
             class="text-xs px-3 py-1.5 rounded-md font-medium"
@@ -56,17 +58,16 @@
   </td>
 </tr>
 
-<!-- Fila de asignación expandible -->
-<tr id="fila-usu-sa-edit-{{ u.pk }}" x-show="editando" style="display:none;background:#f8fafc;border-bottom:1px solid #e2e8f0;">
+<!-- Fila expandible de asignación -->
+<tr x-show="editando" style="display:none;background:#f8fafc;border-bottom:1px solid #e2e8f0;">
   <td colspan="5" class="px-4 py-4">
     <form hx-post="/superadmin/usuarios/{{ u.pk }}/asignar/"
           hx-target="#fila-usu-sa-{{ u.pk }}"
           hx-swap="outerHTML"
-          hx-on::after-request="editando = false"
           class="flex flex-wrap items-end gap-3">
       {% csrf_token %}
       <div class="flex-1 min-w-48">
-        <label class="block text-xs font-medium mb-1.5" style="color:#374151;">
+        <label class="block text-xs font-medium mb-2" style="color:#374151;">
           Plataformas para <strong>{{ u.email }}</strong>
         </label>
         <div class="flex flex-wrap gap-2">
@@ -82,7 +83,7 @@
           {% endfor %}
         </div>
       </div>
-      <div class="flex gap-2">
+      <div class="flex gap-2 mt-2">
         <button type="submit"
                 class="px-3 py-1.5 rounded-lg text-xs font-semibold text-white"
                 style="background:#2563eb;cursor:pointer;"
@@ -98,3 +99,5 @@
     </form>
   </td>
 </tr>
+
+</tbody>
