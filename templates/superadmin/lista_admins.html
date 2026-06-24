@@ -30,13 +30,13 @@
             <th class="text-left px-4 py-3 text-xs font-semibold uppercase" style="color:#64748b;">Acciones</th>
           </tr>
         </thead>
+        {% for item in admins %}
+          {% include 'partials/fila_admin_sa.html' with a=item.a reportes_mes=item.reportes_mes plataformas=plataformas %}
+        {% empty %}
         <tbody>
-          {% for item in admins %}
-            {% include 'partials/fila_admin_sa.html' with a=item.a reportes_mes=item.reportes_mes %}
-          {% empty %}
           <tr><td colspan="6" class="px-4 py-8 text-center text-sm" style="color:#94a3b8;">Sin administradores registrados</td></tr>
-          {% endfor %}
         </tbody>
+        {% endfor %}
       </table>
     </div>
   </div>

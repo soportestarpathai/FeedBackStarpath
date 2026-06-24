@@ -158,6 +158,24 @@ def crear_admin(request):
 
 @superadmin_required
 @require_POST
+def asignar_plataformas_admin(request, pk):
+    user = get_object_or_404(CustomUser, pk=pk, rol=CustomUser.ADMIN)
+    plats = request.POST.getlist('plataformas')
+    nuevas = Platform.objects.filter(pk__in=[p for p in plats if p.isdigit()])
+    user.plataformas_asignadas.set(nuevas)
+    hace_30 = timezone.now() - timedelta(days=30)
+    reportes_mes = Report.objects.filter(
+        plataforma__in=user.plataformas_asignadas.all(),
+        creado_en__gte=hace_30,
+    ).count()
+    plataformas = Platform.objects.filter(activa=True)
+    return render(request, 'partials/fila_admin_sa.html', {
+        'a': user, 'reportes_mes': reportes_mes, 'plataformas': plataformas,
+    })
+
+
+@superadmin_required
+@require_POST
 def toggle_admin(request, pk):
     user = get_object_or_404(CustomUser, pk=pk, rol=CustomUser.ADMIN)
     user.is_active = not user.is_active
@@ -167,7 +185,8 @@ def toggle_admin(request, pk):
         plataforma__in=user.plataformas_asignadas.all(),
         creado_en__gte=hace_30,
     ).count()
-    return render(request, 'partials/fila_admin_sa.html', {'a': user, 'reportes_mes': reportes_mes})
+    plataformas = Platform.objects.filter(activa=True)
+    return render(request, 'partials/fila_admin_sa.html', {'a': user, 'reportes_mes': reportes_mes, 'plataformas': plataformas})
 
 
 @superadmin_required
