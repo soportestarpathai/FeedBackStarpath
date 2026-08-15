@@ -54,6 +54,11 @@
             </span>
           </td>
           <td class="px-4 py-3 flex gap-2">
+            <button type="button"
+              class="text-xs text-slate-600 hover:underline bg-transparent border-none cursor-pointer p-0"
+              onclick="openEditModal('{{ p.pk }}', '{{ p.nombre|escapejs }}', '{{ p.descripcion|default:""|escapejs }}', '{{ p.color }}')">
+              Editar
+            </button>
             <form method="post" action="{% url 'platform_toggle' p.pk %}">
               {% csrf_token %}
               <button type="submit" class="text-xs text-sky-600 hover:underline bg-transparent border-none cursor-pointer p-0">
@@ -75,4 +80,56 @@
     </table>
   </div>
 </div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
+  <div class="bg-white rounded-xl border border-slate-200 p-6 w-full max-w-sm">
+    <h3 class="font-semibold mb-4">Editar plataforma</h3>
+    <form method="post" id="editForm" action="">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="text-sm font-medium text-slate-700">Nombre</label>
+        <input name="nombre" id="edit-nombre" type="text" required
+          class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sky-400 outline-none">
+      </div>
+      <div class="mb-3">
+        <label class="text-sm font-medium text-slate-700">Descripción</label>
+        <textarea name="descripcion" id="edit-descripcion" rows="2"
+          class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sky-400 outline-none"></textarea>
+      </div>
+      <div class="mb-4">
+        <label class="text-sm font-medium text-slate-700">Color</label>
+        <input name="color" id="edit-color" type="color"
+          class="mt-1 h-9 w-full border border-slate-300 rounded-lg cursor-pointer">
+      </div>
+      <div class="flex gap-2">
+        <button type="button" onclick="closeEditModal()"
+          class="w-full bg-slate-100 text-slate-600 font-semibold py-2 rounded-lg hover:bg-slate-200 transition text-sm">
+          Cancelar
+        </button>
+        <button type="submit"
+          class="w-full bg-[#0a1628] text-white font-semibold py-2 rounded-lg hover:bg-[#162d5a] transition text-sm">
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function openEditModal(pk, nombre, descripcion, color) {
+    const modal = document.getElementById('editModal');
+    document.getElementById('edit-nombre').value = nombre;
+    document.getElementById('edit-descripcion').value = descripcion;
+    document.getElementById('edit-color').value = color;
+    document.getElementById('editForm').action = `/plataformas/${pk}/editar/`;
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+  function closeEditModal() {
+    const modal = document.getElementById('editModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+</script>
 {% endblock %}

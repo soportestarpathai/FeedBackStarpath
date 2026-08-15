@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @page { size: A4; margin: 2cm; }
+  body { font-family: sans-serif; color: #0f172a; font-size: 12px; }
+  .header { display:flex; justify-content:space-between; border-bottom:2px solid #2563eb; padding-bottom:8px; margin-bottom:16px; }
+  .title { font-size:16px; font-weight:bold; }
+  .subtitle { font-size:11px; color:#64748b; }
+  table { width:100%; border-collapse:collapse; margin-top:10px; }
+  th { text-align:left; background:#f8fafc; font-size:10px; text-transform:uppercase; color:#64748b; padding:6px 8px; border-bottom:1px solid #e2e8f0; }
+  td { padding:6px 8px; border-bottom:1px solid #f1f5f9; font-size:11px; }
+  .badge { padding:2px 6px; border-radius:4px; font-size:10px; }
+  .activo { background:#dcfce7; color:#059669; }
+  .inactivo { background:#fee2e2; color:#dc2626; }
+  .footer { margin-top:20px; text-align:center; font-size:9px; color:#94a3b8; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <div class="title">FeedBackStarpath — Listado de Usuarios</div>
+      <div class="subtitle">Generado por {{ admin.get_full_name|default:admin.email }} el {{ fecha_generacion|date:"d/m/Y H:i" }}</div>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Usuario</th>
+        <th>Correo</th>
+        <th>Rol</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in usuarios %}
+      <tr>
+        <td>{{ u.get_full_name|default:u.email }}</td>
+        <td>{{ u.email }}</td>
+        <td>{{ u.get_rol_display }}</td>
+        <td>
+          {% if u.is_active %}
+            <span class="badge activo">Activo</span>
+          {% else %}
+            <span class="badge inactivo">Inactivo</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4">No se encontraron usuarios con los filtros aplicados.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="footer">Confidencial · FeedBackStarpath © {{ fecha_generacion|date:"Y" }}</div>
+</body>
+</html>

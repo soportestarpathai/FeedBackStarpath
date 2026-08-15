@@ -14,4 +14,6 @@ urlpatterns = [
     path('superadmin/config/',                  views.config_global,        name='sa_config'),
     path('superadmin/usuarios/',                views.lista_usuarios_sa,    name='sa_usuarios'),
     path('superadmin/usuarios/<int:pk>/asignar/', views.asignar_plataforma_sa, name='sa_asignar_plat'),
+    path('superadmin/plataformas/<int:pk>/editar/', views.editar_plataforma, name='sa_editar_plat'),
+    path('superadmin/plataformas/<int:pk>/cancelar/', views.cancelar_editar_plataforma, name='sa_cancelar_editar_plat'),
 ]

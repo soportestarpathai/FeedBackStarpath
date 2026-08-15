@@ -100,6 +100,41 @@ def toggle_plataforma(request, pk):
         'item': {'plataforma': p, 'admins': admins, 'abiertos': abiertos, 'totales': totales}
     })
 
+@superadmin_required
+def editar_plataforma(request, pk):
+    p = get_object_or_404(Platform, pk=pk)
+
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre', '').strip()
+        desc   = request.POST.get('descripcion', '').strip()
+        color  = request.POST.get('color', p.color).strip()
+        if nombre:
+            p.nombre = nombre
+        p.descripcion = desc
+        p.color = color
+        p.save()
+        admins   = CustomUser.objects.filter(plataformas_asignadas=p, rol=CustomUser.ADMIN)
+        abiertos = Report.objects.filter(plataforma=p, estado=Report.ABIERTO).count()
+        totales  = Report.objects.filter(plataforma=p).count()
+        return render(request, 'partials/card_plataforma.html', {
+            'item': {'plataforma': p, 'admins': admins, 'abiertos': abiertos, 'totales': totales}
+        })
+
+    # GET -> muestra el formulario de edición inline
+    return render(request, 'partials/card_plataforma_edit.html', {
+        'item': {'plataforma': p}
+    })
+
+
+@superadmin_required
+def cancelar_editar_plataforma(request, pk):
+    p = get_object_or_404(Platform, pk=pk)
+    admins   = CustomUser.objects.filter(plataformas_asignadas=p, rol=CustomUser.ADMIN)
+    abiertos = Report.objects.filter(plataforma=p, estado=Report.ABIERTO).count()
+    totales  = Report.objects.filter(plataforma=p).count()
+    return render(request, 'partials/card_plataforma.html', {
+        'item': {'plataforma': p, 'admins': admins, 'abiertos': abiertos, 'totales': totales}
+    })
 
 @superadmin_required
 @require_POST

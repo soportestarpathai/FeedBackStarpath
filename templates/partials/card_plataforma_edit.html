@@ -1,0 +1,39 @@
+<div id="card-plat-{{ item.plataforma.pk }}" class="bg-white rounded-xl p-5" style="border:1.5px solid #122938;">
+  <form hx-post="{% url 'sa_editar_plat' item.plataforma.pk %}"
+        hx-target="#card-plat-{{ item.plataforma.pk }}"
+        hx-swap="outerHTML">
+    {% csrf_token %}
+    <div class="mb-2">
+      <label class="block text-xs font-medium mb-1" style="color:#374151;">Nombre</label>
+      <input type="text" name="nombre" required value="{{ item.plataforma.nombre }}"
+             class="w-full px-2.5 py-1.5 rounded-lg text-sm outline-none"
+             style="border:1.5px solid #e2e8f0;color:#0f172a;">
+    </div>
+    <div class="mb-2">
+      <label class="block text-xs font-medium mb-1" style="color:#374151;">Descripción</label>
+      <input type="text" name="descripcion" value="{{ item.plataforma.descripcion }}"
+             class="w-full px-2.5 py-1.5 rounded-lg text-sm outline-none"
+             style="border:1.5px solid #e2e8f0;color:#0f172a;">
+    </div>
+    <div class="mb-3">
+      <label class="block text-xs font-medium mb-1" style="color:#374151;">Color</label>
+      <input type="color" name="color" value="{{ item.plataforma.color }}"
+             class="w-full h-9 rounded-lg cursor-pointer" style="border:1.5px solid #e2e8f0;padding:2px;">
+    </div>
+    <div class="flex gap-2">
+      <button type="button"
+              hx-get="{% url 'sa_cancelar_editar_plat' item.plataforma.pk %}"
+              hx-target="#card-plat-{{ item.plataforma.pk }}"
+              hx-swap="outerHTML"
+              class="w-full py-1.5 rounded-lg text-xs font-medium"
+              style="border:1.5px solid #e2e8f0;color:#374151;background:transparent;cursor:pointer;">
+        Cancelar
+      </button>
+      <button type="submit"
+              class="w-full py-1.5 rounded-lg text-xs font-medium text-white"
+              style="background:#122938;cursor:pointer;">
+        Guardar
+      </button>
+    </div>
+  </form>
+</div>

@@ -12,19 +12,23 @@
 
   <!-- NAVBAR -->
   <nav class="bg-[#0a1628] h-14 flex items-center px-6 gap-4 sticky top-0 z-50">
-    <a href="/" class="text-white font-extrabold text-base tracking-tight mr-8">
+    <a href="{% url 'home' %}" class="text-white font-extrabold text-base tracking-tight mr-8">
       Feedback<span class="text-sky-400">Eve</span>
     </a>
-    <a href="/" class="nav-link {% block nav_home %}{% endblock %}">Dashboard</a>
+    <a href="{% url 'home' %}" class="nav-link {% block nav_home %}{% endblock %}">Dashboard</a>
+
+    {# ⚠️ Pendiente: no están en apps.accounts.urls. Pásame el urls.py de la app de reportes para resolverlas con {% url %} #}
     <a href="/reportes/nuevo/" class="nav-link {% block nav_new %}{% endblock %}">Nuevo Reporte</a>
     {% if user.is_tester or user.is_admin %}
     <a href="/admin/reportes/" class="nav-link {% block nav_admin_rep %}{% endblock %}">Todos los Reportes</a>
     {% endif %}
+
     {% if user.is_admin %}
-    <a href="/admin/plataformas/" class="nav-link {% block nav_plat %}{% endblock %}">Plataformas</a>
-    <a href="/admin/usuarios/" class="nav-link {% block nav_users %}{% endblock %}">Usuarios</a>
-    <a href="/exports/pdf/" class="nav-link {% block nav_pdf %}{% endblock %}">Exportar PDF</a>
+    <a href="{% url 'admin_platforms' %}" class="nav-link {% block nav_plat %}{% endblock %}">Plataformas</a>
+    <a href="{% url 'admin_usuarios' %}" class="nav-link {% block nav_users %}{% endblock %}">Usuarios</a>
+    <a href="{% url 'exportar_usuarios_pdf' %}" class="nav-link {% block nav_pdf %}{% endblock %}">Exportar PDF</a>
     {% endif %}
+
     <div class="ml-auto flex items-center gap-3">
       <span class="text-slate-400 text-xs">
         {{ user.email }}

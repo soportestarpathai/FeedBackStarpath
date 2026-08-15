@@ -7,6 +7,7 @@ urlpatterns = [
     path('logout/',                      views.logout_view,          name='logout'),
     path('registro/',                    views.registro_view,        name='registro'),
     path('verificar-correo/',            views.verificar_correo_view, name='verificar_correo'),
-    path('admin/usuarios/',              views.usuarios_admin,       name='admin_usuarios'),
-    path('admin/usuarios/<int:pk>/rol/', views.cambiar_rol,          name='cambiar_rol'),
+    path('admin/usuarios/', views.usuarios_admin, name='admin_usuarios'),
+    path('admin/usuarios/exportar-pdf/', views.exportar_usuarios_pdf, name='exportar_usuarios_pdf'),
+    path('admin/usuarios/<int:pk>/rol/', views.cambiar_rol, name='cambiar_rol'),
 ]

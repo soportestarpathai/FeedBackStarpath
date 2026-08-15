@@ -42,6 +42,15 @@
         <option value="inactivo" {% if request.GET.estado == 'inactivo' %}selected{% endif %}>Inactivo</option>
       </select>
     </form>
+
+    <a href="{% url 'exportar_usuarios_pdf' %}?q={{ request.GET.q }}&rol={{ request.GET.rol }}&estado={{ request.GET.estado }}"
+       class="px-3 py-2 rounded-lg text-sm font-medium inline-flex items-center gap-2 whitespace-nowrap"
+       style="background:#2563eb;color:#fff;">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/>
+      </svg>
+      Exportar PDF
+    </a>
   </div>
 
   <!-- Tabla -->
