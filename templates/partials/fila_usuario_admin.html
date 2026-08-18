@@ -1,4 +1,4 @@
-{% load report_tags %}
+﻿{% load report_tags %}
 <tr id="fila-user-{{ u.pk }}" style="border-bottom:1px solid #f1f5f9;" class="hover:bg-slate-50">
   <td class="px-4 py-3">
     <div class="flex items-center gap-2">
@@ -7,8 +7,8 @@
         {% if u.first_name %}{{ u.first_name.0|upper }}{% if u.last_name %}{{ u.last_name.0|upper }}{% endif %}{% else %}{{ u.email.0|upper }}{% endif %}
       </div>
       <div>
-        <div class="text-sm font-medium" style="color:#0f172a;">{{ u.get_full_name|default:"—" }}</div>
-        {% if not u.is_active %}<div class="text-xs" style="color:#94a3b8;">Invitación pendiente</div>{% endif %}
+        <div class="text-sm font-medium" style="color:#0f172a;">{{ u.get_full_name|default:"-" }}</div>
+        {% if not u.is_active %}<div class="text-xs" style="color:#94a3b8;">Invitacion pendiente</div>{% endif %}
       </div>
     </div>
   </td>
@@ -28,6 +28,7 @@
     </form>
   </td>
   <td class="px-4 py-3 text-sm" style="color:#374151;">{{ u.reportes_creados.count }}</td>
+  <td class="px-4 py-3 text-xs" style="color:#64748b;white-space:nowrap;">{{ u.date_joined|date:"d/m/Y" }}</td>
   <td class="px-4 py-3">
     {% if u.is_active %}
       <div class="flex items-center gap-1.5">

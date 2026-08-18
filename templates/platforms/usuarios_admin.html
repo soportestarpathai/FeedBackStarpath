@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% load report_tags %}
 {% block title %}Usuarios — FeedBackStarpath{% endblock %}
 {% block nav_ad_users %}active{% endblock %}
@@ -41,9 +41,17 @@
         <option value="activo" {% if request.GET.estado == 'activo' %}selected{% endif %}>Activo</option>
         <option value="inactivo" {% if request.GET.estado == 'inactivo' %}selected{% endif %}>Inactivo</option>
       </select>
+      <input type="date" name="desde" value="{{ request.GET.desde }}" onchange="this.form.submit()"
+             title="Creado desde"
+             class="px-3 py-2 rounded-lg text-sm outline-none"
+             style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;">
+      <input type="date" name="hasta" value="{{ request.GET.hasta }}" onchange="this.form.submit()"
+             title="Creado hasta"
+             class="px-3 py-2 rounded-lg text-sm outline-none"
+             style="border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;">
     </form>
 
-    <a href="{% url 'exportar_usuarios_pdf' %}?q={{ request.GET.q }}&rol={{ request.GET.rol }}&estado={{ request.GET.estado }}"
+    <a href="{% url 'exportar_usuarios_pdf' %}?q={{ request.GET.q }}&rol={{ request.GET.rol }}&estado={{ request.GET.estado }}&desde={{ request.GET.desde }}&hasta={{ request.GET.hasta }}"
        class="px-3 py-2 rounded-lg text-sm font-medium inline-flex items-center gap-2 whitespace-nowrap"
        style="background:#2563eb;color:#fff;">
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -63,6 +71,7 @@
             <th class="text-left px-4 py-3 text-xs font-semibold uppercase" style="color:#64748b;">Correo</th>
             <th class="text-left px-4 py-3 text-xs font-semibold uppercase" style="color:#64748b;">Rol</th>
             <th class="text-left px-4 py-3 text-xs font-semibold uppercase" style="color:#64748b;">Reportes</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold uppercase" style="color:#64748b;">Creado</th>
             <th class="text-left px-4 py-3 text-xs font-semibold uppercase" style="color:#64748b;">Estado</th>
             <th class="text-left px-4 py-3 text-xs font-semibold uppercase" style="color:#64748b;">Acciones</th>
           </tr>
@@ -72,7 +81,7 @@
             {% include 'partials/fila_usuario_admin.html' %}
           {% empty %}
           <tr>
-            <td colspan="6" class="px-4 py-8 text-center text-sm" style="color:#94a3b8;">
+            <td colspan="7" class="px-4 py-8 text-center text-sm" style="color:#94a3b8;">
               No se encontraron usuarios en tu plataforma
             </td>
           </tr>
